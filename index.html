@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>P-Slice · Guia de Scripts</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap');
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #1a1a24;
+    --border: #2a2a3a;
+    --accent: #7c6aff;
+    --accent2: #ff6a9b;
+    --accent3: #6affd4;
+    --text: #e8e6f0;
+    --text2: #9896b0;
+    --lua: #f7c948;
+    --hscript: #6affd4;
+    --warning: #ff9f43;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    padding: 3rem 2rem 2rem;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, #0d0b1a 0%, var(--bg) 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -60px; left: -60px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(124,106,255,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    top: -40px; right: 10%;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(106,255,212,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .header-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  h1 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -1px;
+  }
+  h1 span.p { color: var(--accent); }
+  h1 span.slice { color: var(--accent2); }
+  .subtitle {
+    margin-top: 0.75rem;
+    color: var(--text2);
+    font-size: 1rem;
+    font-weight: 400;
+    max-width: 500px;
+  }
+
+  /* NAV TABS */
+  nav {
+    display: flex;
+    gap: 0.25rem;
+    padding: 1rem 2rem;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  nav::-webkit-scrollbar { display: none; }
+  .tab {
+    padding: 0.5rem 1.1rem;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.78rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+    background: transparent;
+    color: var(--text2);
+  }
+  .tab:hover { color: var(--text); border-color: var(--border); }
+  .tab.active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* CARDS */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+  .card-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--accent3);
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .card-title .badge {
+    font-size: 0.6rem;
+    padding: 2px 7px;
+    border-radius: 20px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .badge-lua { background: rgba(247,201,72,0.15); color: var(--lua); border: 1px solid rgba(247,201,72,0.3); }
+  .badge-hx { background: rgba(106,255,212,0.15); color: var(--hscript); border: 1px solid rgba(106,255,212,0.3); }
+  .badge-both {
+    background: rgba(124,106,255,0.15); color: var(--accent);
+    border: 1px solid rgba(124,106,255,0.3);
+  }
+
+  p.desc { color: var(--text2); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1rem; }
+
+  /* CODE */
+  pre {
+    background: #070710;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    overflow-x: auto;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.78rem;
+    line-height: 1.7;
+    margin: 0.5rem 0;
+    position: relative;
+  }
+  pre .lang-tag {
+    position: absolute;
+    top: 8px; right: 10px;
+    font-size: 0.6rem;
+    color: var(--text2);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .kw { color: #c792ea; }
+  .fn { color: #82aaff; }
+  .str { color: #c3e88d; }
+  .num { color: var(--lua); }
+  .cmt { color: #546e7a; font-style: italic; }
+  .type { color: var(--accent3); }
+  .punc { color: #89ddff; }
+
+  /* GRID */
+  .grid2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  @media (max-width: 640px) { .grid2 { grid-template-columns: 1fr; } }
+
+  /* TABLE */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.83rem;
+    margin: 0.5rem 0;
+  }
+  th {
+    text-align: left;
+    padding: 0.5rem 0.75rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text2);
+    border-bottom: 1px solid var(--border);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  td {
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid rgba(42,42,58,0.5);
+    vertical-align: top;
+  }
+  td code {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--accent3);
+    background: rgba(106,255,212,0.07);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  td.var-name { color: var(--lua); font-family: 'Space Mono', monospace; font-size: 0.78rem; }
+  td.desc-col { color: var(--text2); }
+
+  /* SECTION HEADER */
+  .section-header {
+    margin-bottom: 1.5rem;
+  }
+  .section-header h2 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+  }
+  .section-header p {
+    color: var(--text2);
+    margin-top: 0.4rem;
+    font-size: 0.9rem;
+  }
+
+  /* COMPARE BOX */
+  .compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  @media (max-width: 600px) { .compare { grid-template-columns: 1fr; } }
+  .compare-box { }
+  .compare-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+    font-weight: 700;
+  }
+  .compare-label.lua { color: var(--lua); }
+  .compare-label.hx { color: var(--hscript); }
+
+  /* CHIP */
+  .chip {
+    display: inline-block;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text2);
+    margin: 2px;
+  }
+
+  /* DIVIDER */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 1.5rem 0;
+  }
+
+  /* CALLBACK TABLE */
+  .cb-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid rgba(42,42,58,0.4);
+  }
+  .cb-name {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--accent2);
+    min-width: 200px;
+    flex-shrink: 0;
+  }
+  .cb-desc { color: var(--text2); font-size: 0.85rem; line-height: 1.5; }
+
+  /* TIP BOX */
+  .tip {
+    background: rgba(124,106,255,0.08);
+    border-left: 3px solid var(--accent);
+    padding: 0.75rem 1rem;
+    border-radius: 0 8px 8px 0;
+    margin: 0.75rem 0;
+    font-size: 0.87rem;
+    color: var(--text2);
+  }
+  .tip strong { color: var(--accent); }
+
+  .warn {
+    background: rgba(255,159,67,0.08);
+    border-left: 3px solid var(--warning);
+    padding: 0.75rem 1rem;
+    border-radius: 0 8px 8px 0;
+    margin: 0.75rem 0;
+    font-size: 0.87rem;
+    color: var(--text2);
+  }
+  .warn strong { color: var(--warning); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-tag">// Guia de Scripting</div>
+  <h1><span class="p">P</span><span class="slice">-Slice</span> Engine</h1>
+  <p class="subtitle">Referência completa para scripts em Lua e HScript (PE 1.0 base) — P-Slice 3.4.x</p>
+</header>
+
+<nav>
+  <button class="tab active" onclick="switchTab('intro')">Intro</button>
+  <button class="tab" onclick="switchTab('callbacks')">Callbacks</button>
+  <button class="tab" onclick="switchTab('variaveis')">Variáveis</button>
+  <button class="tab" onclick="switchTab('playstate')">PlayState</button>
+  <button class="tab" onclick="switchTab('reflection')">Reflection</button>
+  <button class="tab" onclick="switchTab('sprites')">Sprites</button>
+  <button class="tab" onclick="switchTab('tweens')">Tweens</button>
+  <button class="tab" onclick="switchTab('camera')">Camera</button>
+  <button class="tab" onclick="switchTab('hscript')">HScript</button>
+  <button class="tab" onclick="switchTab('exemplos')">Exemplos</button>
+</nav>
+
+<main>
+
+<!-- ===== INTRO ===== -->
+<div class="section active" id="intro">
+  <div class="section-header">
+    <h2>Tipos de Script</h2>
+    <p>Onde colocar cada script e quando ele roda</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Locais de Script <span class="badge badge-both">LUA + HX</span></div>
+    <table>
+      <tr><th>Tipo</th><th>Caminho</th><th>Quando roda</th></tr>
+      <tr><td class="var-name">Song</td><td><code>songs/minha-musica/</code></td><td class="desc-col">Só nessa música específica</td></tr>
+      <tr><td class="var-name">Stage</td><td><code>stages/</code> (mesmo nome do .json)</td><td class="desc-col">Só quando o stage da música é carregado</td></tr>
+      <tr><td class="var-name">Character</td><td><code>characters/</code> (mesmo nome do .json)</td><td class="desc-col">Só quando o personagem está na música</td></tr>
+      <tr><td class="var-name">Note Type</td><td><code>custom_notetypes/</code></td><td class="desc-col">Só se esse tipo de nota está no chart</td></tr>
+      <tr><td class="var-name">Event</td><td><code>custom_events/</code></td><td class="desc-col">Só se o evento está no chart</td></tr>
+      <tr><td class="var-name">Global</td><td><code>scripts/</code></td><td class="desc-col">Sempre, em toda música do mod</td></tr>
+    </table>
+  </div>
+
+  <div class="compare">
+    <div class="compare-box">
+      <div class="compare-label lua">● Lua — Template base</div>
+      <pre><span class="cmt">-- Callbacks principais</span>
+<span class="kw">function</span> <span class="fn">onCreate</span><span class="punc">()</span>
+  <span class="cmt">-- roda ao criar o estado</span>
+<span class="kw">end</span>
+
+<span class="kw">function</span> <span class="fn">onCreatePost</span><span class="punc">()</span>
+  <span class="cmt">-- após criar tudo</span>
+<span class="kw">end</span>
+
+<span class="kw">function</span> <span class="fn">onUpdate</span><span class="punc">(</span>elapsed<span class="punc">)</span>
+  <span class="cmt">-- todo frame</span>
+<span class="kw">end</span>
+
+<span class="kw">function</span> <span class="fn">onBeatHit</span><span class="punc">()</span>
+  <span class="cmt">-- todo beat (4 steps)</span>
+<span class="kw">end</span>
+
+<span class="kw">function</span> <span class="fn">onStepHit</span><span class="punc">()</span>
+  <span class="cmt">-- todo step (1/4 beat)</span>
+<span class="kw">end</span>
+<span class="lang-tag">lua</span></pre>
+    </div>
+    <div class="compare-box">
+      <div class="compare-label hx">● HScript (.hx) — Template base</div>
+      <pre><span class="cmt">// Mesmos callbacks, sintaxe Haxe</span>
+<span class="kw">function</span> <span class="fn">onCreate</span><span class="punc">() {</span>
+  <span class="cmt">// roda ao criar o estado</span>
+<span class="punc">}</span>
+
+<span class="kw">function</span> <span class="fn">onCreatePost</span><span class="punc">() {</span>
+  <span class="cmt">// após criar tudo</span>
+<span class="punc">}</span>
+
+<span class="kw">function</span> <span class="fn">onUpdate</span><span class="punc">(</span>elapsed<span class="punc">) {</span>
+  <span class="cmt">// todo frame</span>
+<span class="punc">}</span>
+
+<span class="kw">function</span> <span class="fn">onBeatHit</span><span class="punc">() {</span>
+  <span class="cmt">// todo beat</span>
+<span class="punc">}</span>
+
+<span class="kw">function</span> <span class="fn">onStepHit</span><span class="punc">() {</span>
+  <span class="cmt">// todo step</span>
+<span class="punc">}</span>
+<span class="lang-tag">hscript</span></pre>
+    </div>
+  </div>
+
+  <div class="tip">
+    <strong>P-Slice vs Psych puro:</strong> P-Slice herda toda a API Lua/HScript do PE 1.0. Scripts feitos pra PE 1.0 funcionam no P-Slice — mas o P-Slice adiciona variáveis extras de V-Slice (ex: freeplay metadata).
+  </div>
+
+  <div class="warn">
+    <strong>Project.xml:</strong> Certifique que <code>LUA_ALLOWED</code> e <code>HSCRIPT_ALLOWED</code> estão definidos no Project.xml do P-Slice. Sem eles, os scripts são ignorados silenciosamente.
+  </div>
+</div>
+
+<!-- ===== CALLBACKS ===== -->
+<div class="section" id="callbacks">
+  <div class="section-header">
+    <h2>Callbacks</h2>
+    <p>Funções chamadas automaticamente pelo engine em resposta a eventos do jogo</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Ciclo de Vida</div>
+    <div class="cb-row"><div class="cb-name">onCreate()</div><div class="cb-desc">Início da criação do estado. Use para criar sprites e inicializar variáveis.</div></div>
+    <div class="cb-row"><div class="cb-name">onCreatePost()</div><div class="cb-desc">Após tudo criado. Personagens e strums já existem aqui.</div></div>
+    <div class="cb-row"><div class="cb-name">onUpdate(elapsed)</div><div class="cb-desc">Todo frame. <code>elapsed</code> = tempo desde o último frame em segundos.</div></div>
+    <div class="cb-row"><div class="cb-name">onUpdatePost(elapsed)</div><div class="cb-desc">Após o update do PlayState. Mais seguro para modificar posições.</div></div>
+    <div class="cb-row"><div class="cb-name">onDestroy()</div><div class="cb-desc">Quando o estado é destruído (fim de música ou saída).</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Ritmo & Música</div>
+    <div class="cb-row"><div class="cb-name">onBeatHit()</div><div class="cb-desc">Cada beat (usa <code>curBeat</code>). 4 beats por seção.</div></div>
+    <div class="cb-row"><div class="cb-name">onStepHit()</div><div class="cb-desc">Cada step (usa <code>curStep</code>). 4 steps por beat = 16 por seção.</div></div>
+    <div class="cb-row"><div class="cb-name">onSectionHit()</div><div class="cb-desc">Cada seção (usa <code>curSection</code>).</div></div>
+    <div class="cb-row"><div class="cb-name">onCountdownStarted()</div><div class="cb-desc">Countdown iniciado. Strums já têm posição aqui.</div></div>
+    <div class="cb-row"><div class="cb-name">onCountdownTick(counter)</div><div class="cb-desc"><code>counter</code>: 0=Three, 1=Two, 2=One, 3=Go!, 4=Start.</div></div>
+    <div class="cb-row"><div class="cb-name">onSongStart()</div><div class="cb-desc">Música começa de fato a tocar.</div></div>
+    <div class="cb-row"><div class="cb-name">onEndSong()</div><div class="cb-desc">Música terminou. Retorne <code>Function_Stop</code> para fazer cutscene.</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Notas</div>
+    <div class="cb-row"><div class="cb-name">goodNoteHit(id, direction, noteType, isSustainNote)</div><div class="cb-desc">Jogador acertou uma nota.</div></div>
+    <div class="cb-row"><div class="cb-name">opponentNoteHit(id, direction, noteType, isSustainNote)</div><div class="cb-desc">Oponente acertou uma nota.</div></div>
+    <div class="cb-row"><div class="cb-name">noteMiss(id, direction, noteType, isSustainNote)</div><div class="cb-desc">Jogador errou uma nota.</div></div>
+    <div class="cb-row"><div class="cb-name">noteMissPress(direction)</div><div class="cb-desc">Jogador pressionou tecla sem nota (ghost tap desativado).</div></div>
+    <div class="cb-row"><div class="cb-name">onSpawnNote(id, direction, noteType, isSustainNote)</div><div class="cb-desc">Uma nota aparece na tela.</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Inputs do Jogador</div>
+    <div class="cb-row"><div class="cb-name">onKeyPress(key)</div><div class="cb-desc"><code>key</code>: 0=esq, 1=baixo, 2=cima, 3=dir.</div></div>
+    <div class="cb-row"><div class="cb-name">onKeyRelease(key)</div><div class="cb-desc">Tecla soltada.</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Eventos & Estado</div>
+    <div class="cb-row"><div class="cb-name">onEvent(name, val1, val2, strumTime)</div><div class="cb-desc">Um evento do chart foi ativado.</div></div>
+    <div class="cb-row"><div class="cb-name">onGameOver()</div><div class="cb-desc">Jogador morreu. Retorne <code>Function_Stop</code> para cancelar.</div></div>
+    <div class="cb-row"><div class="cb-name">onPause()</div><div class="cb-desc">Jogo pausado.</div></div>
+    <div class="cb-row"><div class="cb-name">onResume()</div><div class="cb-desc">Jogo resumido.</div></div>
+    <div class="cb-row"><div class="cb-name">onRecalculateRating()</div><div class="cb-desc">Rating sendo recalculado. Retorne <code>Function_Stop</code> para customizar.</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Function Returns — controle de fluxo</div>
+    <div class="compare">
+      <div>
+        <pre><span class="cmt">-- Lua</span>
+<span class="kw">function</span> <span class="fn">onEndSong</span><span class="punc">()</span>
+  startVideo<span class="punc">(</span><span class="str">'cutscene_end'</span><span class="punc">)</span>
+  <span class="kw">return</span> Function_Stop
+  <span class="cmt">-- cancela o fim de música</span>
+<span class="kw">end</span>
+<span class="lang-tag">lua</span></pre>
+      </div>
+      <div>
+        <pre><span class="cmt">// HScript</span>
+<span class="kw">function</span> <span class="fn">onEndSong</span><span class="punc">() {</span>
+  startVideo<span class="punc">(</span><span class="str">'cutscene_end'</span><span class="punc">);</span>
+  <span class="kw">return</span> Function_Stop<span class="punc">;</span>
+<span class="punc">}</span>
+<span class="lang-tag">hscript</span></pre>
+      </div>
+    </div>
+    <table>
+      <tr><th>Valor</th><th>Efeito</th></tr>
+      <tr><td><code>Function_Stop</code></td><td class="desc-col">Cancela o comportamento padrão (ex: impede fim de música)</td></tr>
+      <tr><td><code>Function_Continue</code></td><td class="desc-col">Continua normalmente (padrão)</td></tr>
+      <tr><td><code>Function_StopLua</code></td><td class="desc-col">Impede que o callback rode nos próximos scripts Lua</td></tr>
+      <tr><td><code>Function_StopHScript</code></td><td class="desc-col">Impede que rode nos próximos HScripts</td></tr>
+      <tr><td><code>Function_StopAll</code></td><td class="desc-col">Impede em todos os scripts seguintes</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ===== VARIÁVEIS ===== -->
+<div class="section" id="variaveis">
+  <div class="section-header">
+    <h2>Variáveis Globais</h2>
+    <p>Leitura direta — alterar não afeta o jogo (use setProperty para isso)</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Música & Beat</div>
+    <table>
+      <tr><th>Variável</th><th>Tipo</th><th>Descrição</th></tr>
+      <tr><td class="var-name">songName</td><td><code>String</code></td><td class="desc-col">Nome da música (visível na tela de pause)</td></tr>
+      <tr><td class="var-name">bpm</td><td><code>Float</code></td><td class="desc-col">BPM inicial da música</td></tr>
+      <tr><td class="var-name">curBpm</td><td><code>Float</code></td><td class="desc-col">BPM na seção atual</td></tr>
+      <tr><td class="var-name">songLength</td><td><code>Float</code></td><td class="desc-col">Duração total em ms</td></tr>
+      <tr><td class="var-name">curBeat</td><td><code>Int</code></td><td class="desc-col">Beat atual</td></tr>
+      <tr><td class="var-name">curStep</td><td><code>Int</code></td><td class="desc-col">Step atual</td></tr>
+      <tr><td class="var-name">curSection</td><td><code>Int</code></td><td class="desc-col">Seção atual</td></tr>
+      <tr><td class="var-name">curDecBeat</td><td><code>Float</code></td><td class="desc-col">Beat com decimal (posição exata)</td></tr>
+      <tr><td class="var-name">crochet</td><td><code>Float</code></td><td class="desc-col">Duração de 1 beat em ms</td></tr>
+      <tr><td class="var-name">stepCrochet</td><td><code>Float</code></td><td class="desc-col">Duração de 1 step em ms</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Score & Gameplay</div>
+    <table>
+      <tr><th>Variável</th><th>Descrição</th></tr>
+      <tr><td class="var-name">score</td><td class="desc-col">Pontuação atual</td></tr>
+      <tr><td class="var-name">misses</td><td class="desc-col">Notas erradas</td></tr>
+      <tr><td class="var-name">hits</td><td class="desc-col">Notas acertadas</td></tr>
+      <tr><td class="var-name">combo</td><td class="desc-col">Combo atual</td></tr>
+      <tr><td class="var-name">rating</td><td class="desc-col">0.0 a 1.0</td></tr>
+      <tr><td class="var-name">ratingName</td><td class="desc-col">"Sick!", "Good", "Bad", "Shit"</td></tr>
+      <tr><td class="var-name">ratingFC</td><td class="desc-col">"FC", "GFC", "SFC", "SDBC", "Clear"</td></tr>
+      <tr><td class="var-name">botPlay</td><td class="desc-col">true se bot está ativo</td></tr>
+      <tr><td class="var-name">practice</td><td class="desc-col">true se modo prática</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Personagens & Stage</div>
+    <table>
+      <tr><th>Variável</th><th>Descrição</th></tr>
+      <tr><td class="var-name">boyfriendName</td><td class="desc-col">JSON name do player</td></tr>
+      <tr><td class="var-name">dadName</td><td class="desc-col">JSON name do oponente</td></tr>
+      <tr><td class="var-name">gfName</td><td class="desc-col">JSON name da GF</td></tr>
+      <tr><td class="var-name">curStage</td><td class="desc-col">Stage da música</td></tr>
+      <tr><td class="var-name">isStoryMode</td><td class="desc-col">true se Story Mode</td></tr>
+      <tr><td class="var-name">scrollSpeed</td><td class="desc-col">Velocidade inicial das notas</td></tr>
+      <tr><td class="var-name">mustHitSection</td><td class="desc-col">Seção atual é do player?</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Strums — disponíveis após onCountdownStarted</div>
+    <table>
+      <tr><th>Variável</th><th>Valor padrão</th></tr>
+      <tr><td class="var-name">defaultPlayerStrumX0</td><td class="desc-col">732 (Left)</td></tr>
+      <tr><td class="var-name">defaultPlayerStrumX1</td><td class="desc-col">844 (Down)</td></tr>
+      <tr><td class="var-name">defaultPlayerStrumX2</td><td class="desc-col">956 (Up)</td></tr>
+      <tr><td class="var-name">defaultPlayerStrumX3</td><td class="desc-col">1068 (Right)</td></tr>
+      <tr><td class="var-name">defaultOpponentStrumX0</td><td class="desc-col">92 (Left)</td></tr>
+      <tr><td class="var-name">defaultOpponentStrumX1</td><td class="desc-col">204 (Down)</td></tr>
+      <tr><td class="var-name">defaultOpponentStrumX2</td><td class="desc-col">316 (Up)</td></tr>
+      <tr><td class="var-name">defaultOpponentStrumX3</td><td class="desc-col">428 (Right)</td></tr>
+    </table>
+    <div class="tip" style="margin-top:0.75rem"><strong>Y:</strong> 50 (upscroll) ou 570 (downscroll)</div>
+  </div>
+</div>
+
+<!-- ===== PLAYSTATE ===== -->
+<div class="section" id="playstate">
+  <div class="section-header">
+    <h2>PlayState Functions</h2>
+    <p>Funções de controle do estado do jogo</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Fluxo da Música</div>
+    <pre><span class="cmt">-- Iniciar countdown manualmente (após cutscene de entrada)</span>
+<span class="fn">startCountdown</span><span class="punc">()</span>
+
+<span class="cmt">-- Terminar música (cancelável com Function_Stop no callback)</span>
+<span class="fn">endSong</span><span class="punc">()</span>
+
+<span class="cmt">-- Reiniciar música</span>
+<span class="fn">restartSong</span><span class="punc">()</span>           <span class="cmt">-- com transição</span>
+<span class="fn">restartSong</span><span class="punc">(</span><span class="kw">true</span><span class="punc">)</span>      <span class="cmt">-- pula transição</span>
+
+<span class="cmt">-- Sair para freeplay/story</span>
+<span class="fn">exitSong</span><span class="punc">()</span>
+
+<span class="cmt">-- Carregar outra música</span>
+<span class="fn">loadSong</span><span class="punc">(</span><span class="str">'Bopeebo'</span><span class="punc">,</span> <span class="num">1</span><span class="punc">)</span>  <span class="cmt">-- nome, dificuldade (0=easy,1=normal,2=hard)</span>
+
+<span class="cmt">-- Posição atual em ms</span>
+<span class="kw">local</span> pos <span class="punc">=</span> <span class="fn">getSongPosition</span><span class="punc">()</span>
+<span class="lang-tag">lua</span></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Cutscenes</div>
+    <pre><span class="cmt">-- Vídeo</span>
+<span class="fn">startVideo</span><span class="punc">(</span><span class="str">'intro_cutscene'</span><span class="punc">)</span>
+<span class="fn">startVideo</span><span class="punc">(</span><span class="str">'mid_cutscene'</span><span class="punc">,</span> <span class="kw">true</span><span class="punc">,</span> <span class="kw">true</span><span class="punc">)</span> <span class="cmt">-- canSkip, forMidSong</span>
+
+<span class="cmt">-- Diálogo</span>
+<span class="fn">startDialogue</span><span class="punc">(</span><span class="str">'dialogue'</span><span class="punc">)</span>
+<span class="fn">startDialogue</span><span class="punc">(</span><span class="str">'dialogue'</span><span class="punc">,</span> <span class="str">'breakfast'</span><span class="punc">)</span> <span class="cmt">-- com música de fundo</span>
+
+<span class="cmt">-- Exemplo: cutscene no final da música</span>
+<span class="kw">function</span> <span class="fn">onEndSong</span><span class="punc">()</span>
+  <span class="kw">if</span> <span class="kw">not</span> seenCutscene <span class="kw">then</span>
+    <span class="fn">startVideo</span><span class="punc">(</span><span class="str">'ending'</span><span class="punc">)</span>
+    <span class="kw">return</span> Function_Stop
+  <span class="kw">end</span>
+<span class="kw">end</span>
+<span class="lang-tag">lua</span></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Eventos & UI</div>
+    <pre><span class="cmt">-- Disparar evento manualmente</span>
+<span class="fn">triggerEvent</span><span class="punc">(</span><span class="str">'Hey!'</span><span class="punc">,</span> <span class="str">'BF'</span><span class="punc">,</span> <span class="str">'0.6'</span><span class="punc">)</span>
+<span class="fn">triggerEvent</span><span class="punc">(</span><span class="str">'Change Character'</span><span class="punc">,</span> <span class="str">'dad'</span><span class="punc">,</span> <span class="str">'pico'</span><span class="punc">)</span>
+
+<span class="cmt">-- Cores da health bar</span>
+<span class="fn">setHealthBarColors</span><span class="punc">(</span><span class="str">'FF0000'</span><span class="punc">,</span> <span class="str">'00FF00'</span><span class="punc">)</span>
+<span class="fn">setHealthBarColors</span><span class="punc">(</span><span class="str">'red'</span><span class="punc">,</span> <span class="str">'lime'</span><span class="punc">)</span>
+
+<span class="cmt">-- Cores da time bar</span>
+<span class="fn">setTimeBarColors</span><span class="punc">(</span><span class="str">'FFFFFF'</span><span class="punc">,</span> <span class="str">'000000'</span><span class="punc">)</span>
+<span class="lang-tag">lua</span></pre>
+  </div>
+</div>
+
+<!-- ===== REFLECTION ===== -->
+<div class="section" id="reflection">
+  <div class="section-header">
+    <h2>Reflection Functions</h2>
+    <p>Leitura e escrita de propriedades de qualquer objeto do PlayState</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">getProperty / setProperty</div>
+    <pre><span class="cmt">-- Ler propriedade</span>
+<span class="kw">local</span> bfX <span class="punc">=</span> <span class="fn">getProperty</span><span class="punc">(</span><span class="str">'boyfriend.x'</span><span class="punc">)</span>
+<span class="kw">local</span> anim <span class="punc">=</span> <span class="fn">getProperty</span><span class="punc">(</span><span class="str">'boyfriend.animation.curAnim.name'</span><span class="punc">)</span>
+<span class="kw">local</span> singArr <span class="punc">=</span> <span class="fn">getProperty</span><span class="punc">(</span><span class="str">'singAnimations[0]'</span><span class="punc">)</span>
+
+<span class="cmt">-- Alterar propriedade</span>
+<span class="fn">setProperty</span><span class="punc">(</span><span class="str">'boyfriend.x'</span><span class="punc">,</span> <span class="num">400</span><span class="punc">)</span>
+<span class="fn">setProperty</span><span class="punc">(</span><span class="str">'boyfriend.stunned'</span><span class="punc">,</span> <span class="kw">true</span><span class="punc">)</span>
+<span class="fn">setProperty</span><span class="punc">(</span><span class="str">'camGame.zoom'</span><span class="punc">,</span> <span class="num">1.2</span><span class="punc">)</span>
+<span class="fn">setProperty</span><span class="punc">(</span><span class="str">'scrollSpeed'</span><span class="punc">,</span> <span class="num">2.5</span><span class="punc">)</span>
+
+<span class="cmt">-- De uma classe estática</span>
+<span class="fn">getPropertyFromClass</span><span class="punc">(</span><span class="str">'backend.ClientPrefs'</span><span class="punc">,</span> <span class="str">'data.downScroll'</span><span class="punc">)</span>
+<span class="fn">setPropertyFromClass</span><span class="punc">(</span><span class="str">'states.PlayState'</span><span class="punc">,</span> <span class="str">'SONG.player1'</span><span class="punc">,</span> <span class="str">'pico-playable'</span><span class="punc">)</span>
+<span class="lang-tag">lua</span></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title">getPropertyFromGroup / setPropertyFromGroup</div>
+    <pre><span class="cmt">-- Ler propriedade de membro de grupo</span>
+<span class="kw">local</span> animName <span class="punc">=</span> <span class="fn">getPropertyFromGroup</span><span class="punc">(</span><span class="str">'playerStrums'</span><span class="punc">,</span> <span class="num">1</span><span class="punc">,</span> <span class="str">'animation.curAnim.name'</span><span class="punc">)</span>
+
+<span class="cmt">-- Esconder nota Up do player</span>
+<span class="fn">setPropertyFromGroup</span><span class="punc">(</span><span class="str">'playerStrums'</span><span class="punc">,</span> <span class="num">2</span><span class="punc">,</span> <span class="str">'visible'</span><span class="punc">,</span> <span class="kw">false</span><span class="punc">)</span>
+
+<span class="cmt">-- Iterar todas as notas não spawnadas</span>
+<span class="kw">for</span> i <span class="punc">=</span> <span class="num">0</span><span class="punc">,</span> <span class="fn">getProperty</span><span class="punc">(</span><span class="str">'unspawnNotes.length'</span><span class="punc">)</span> <span class="punc">-</span> <span class="num">1</span> <span class="kw">do</span>
+  <span class="kw">local</span> noteType <span class="punc">=</span> <span class="fn">getPropertyFromGroup</span><span class="punc">(</span><span class="str">'unspawnNotes'</span><span class="punc">,</span> i<span class="punc">,</span> <span class="str">'noteType'</span><span class="punc">)</span>
+  <span class="fn">debugPrint</span><span class="punc">(</span>noteType<span class="punc">)</span>
+<span class="kw">end</span>
+<span class="lang-tag">lua</span></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title">callMethod — chamar funções do PlayState</div>
+    <pre><span class="cmt">-- Limpar todas as notas</span>
+<span class="fn">callMethod</span><span class="punc">(</span><span class="str">'KillNotes'</span><span class="punc">)</span>
+
+<span class="cmt">-- Checar animação</span>
+<span class="kw">local</span> isNull <span class="punc">=</span> <span class="fn">callMethod</span><span class="punc">(</span><span class="str">'boyfriend.isAnimationNull'</span><span class="punc">)</span>
+
+<span class="cmt">-- Mudar ícone do player</span>
+<span class="fn">callMethod</span><span class="punc">(</span><span class="str">'iconP1.changeIcon'</span><span class="punc">,</span> <span class="punc">{</span><span class="str">'bf-old'</span><span class="punc">})</span>
+
+<span class="cmt">-- Spawn de note splash</span>
+<span class="fn">callMethod</span><span class="punc">(</span><span class="str">'spawnNoteSplashOnNote'</span><span class="punc">,</span> <span class="punc">{</span><span class="fn">instanceArg</span><span class="punc">(</span><span class="str">'notes.members[0]'</span><span class="punc">)})</span>
+<span class="lang-tag">lua</span></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Posicionamento & Transform</div>
+    <pre><span class="cmt">-- Centralizar na tela</span>
+<span class="fn">screenCenter</span><span class="punc">(</span><span class="str">'meuSprite'</span><span class="punc">)</span>
+<span class="fn">screenCenter</span><span class="punc">(</span><span class="str">'meuSprite'</span><span class="punc">,</span> <span class="str">'x'</span><span class="punc">)</span>
+
+<span class="cmt">-- Escalar</span>
+<span class="fn">scaleObject</span><span class="punc">(</span><span class="str">'meuSprite'</span><span class="punc">,</span> <span class="num">1.5</span><span class="punc">,</span> <span class="num">1.5</span><span class="punc">)</span>
+<span class="fn">setGraphicSize</span><span class="punc">(</span><span class="str">'meuSprite'</span><span class="punc">,</span> <span class="num">300</span><span class="punc">)</span>  <span class="cmt">-- 300px de largura</span>
+<span class="fn">updateHitbox</span><span class="punc">(</span><span class="str">'meuSprite'</span><span class="punc">)</span>
+
+<span class="cmt">-- Parallax (scroll factor)</span>
+<span class="fn">setScrollFactor</span><span class="punc">(</span><span class="str">'meuSprite'</span><span class="punc">,</span> <span class="num">0</span><span class="punc">,</span> <span class="num">0</span><span class="punc">)</span>  <span class="cmt">-- imóvel</span>
+
+<span class="cmt">-- Pegar posição</span>
+<span class="kw">local</span> mx <span class="punc">=</span> <span class="fn">getMidpointX</span><span class="punc">(</span><span class="str">'boyfriend'</span><span class="punc">)</span>
+<span class="kw">local</span> my <span class="punc">=</span> <span class="fn">getMidpointY</span><span class="punc">(</span><span class="str">'boyfriend'</span><span class="punc">)</span>
+
+<span class="cmt">-- Ordem de layer</span>
+<span class="fn">setObjectOrder</span><span class="punc">(</span><span class="str">'boyfriendGroup'</span><span class="punc">,</span> <span class="fn">getObjectOrder</span><span class="punc">(</span><span class="str">'gfGroup'</span><span class="punc">))</span>
+<span class="lang-tag">lua</span></pre>
+  </div>
+</div>
+
+<!-- ===== SPRITES ===== -->
+<div class="section" id="sprites">
+  <div class="section-header">
+    <h2>Sprites & Texto</h2>
+    <p>Criar e manipular objetos visuais em runtime</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">makeLuaSprite / addLuaSprite <span class="badge badge-both">LUA + HX</span></div>
+    <pre><span class="cmt">-- Criar sprite simples (tag, imagem, x, y)</span>
+<span class="fn">makeLuaSprite</span><span class="punc">(</span><span class="str">'myBg'</span><span class="punc">,</span> <span class="str">'stages/school/bg'</span><span class="punc">,</span> <span class="num">0</span><span class="punc">,</span> <span class="num">0</span><span class="punc">)</span>
+<span class="fn">addLuaSprite</span><span class="punc">(</span><span class="str">'myBg'</span><span class="punc">,</span> <span class="kw">false</span><span class="punc">)</span>  <span class="cmt">-- false = atrás dos personagens</span>
+
+<span class="cmt">-- Sprite animado (spritesheet)</span>
+<span class="fn">makeAnimatedLuaSprite</span><span class="punc">(</span><span class="str">'explosion'</span><span class="punc">,</span> <span class="str">'effects/explosion'</span><span class="punc">,</span> <span class="num">300</span><span class="punc">,</span> <span class="num">200</span><span class="punc">)</span>
+<span class="fn">addAnimationByPrefix</span><span class="punc">(</span><span class="str">'explosion'</span><span class="punc">,</span> <span class="str">'explode'</span><span class="punc">,</span> <span class="str">'Explosion'</span><span class="punc">,</span> <span class="num">24</span><span class="punc">,</span> <span class="kw">false</span><span class="punc">)</span>
+<span class="fn">addLuaSprite</span><span class="punc">(</span><span class="str">'explosion'</span><span class="punc">,</span> <span class="kw">true</span><span class="punc">)</span>  <span class="cmt">-- true = na frente de tudo</span>
+<span class="fn">playAnim</span><span class="punc">(</span><span class="str">'explosion'</span><span class="punc">,</span> <span class="str">'explode'</span><span class="punc">)</span>
+
+<span class="cmt">-- Camera do sprite</span>
+<span class="fn">setObjectCamera</span><span class="punc">(</span><span class="str">'myBg'</span><span class="punc">,</span> <span class="str">'game'</span><span class="punc">)</span>   <span class="cmt">-- 'game' | 'hud' | 'other'</span>
+
+<span class="cmt">-- Remover</span>
+<span class="fn">removeLuaSprite</span><span class="punc">(</span><span class="str">'myBg'</span><span class="punc">)</span>
+<span class="lang-tag">lua</span></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Animações</div>
+    <pre><span class="cmt">-- Adicionar animação por prefixo (Sparrow atlas)</span>
+<span class="fn">addAnimationByPrefix</span><span class="punc">(</span><span class="str">'tag'</span><span class="punc">,</span> <span class="str">'nomeDaAnim'</span><span class="punc">,</span> <span class="str">'prefixoNoAtlas'</span><span class="punc">,</span> fps<span class="punc">,</span> loop<span class="punc">)</span>
+
+<span class="cmt">-- Adicionar por indices</span>
+<span class="fn">addAnimationByIndices</span><span class="punc">(</span><span class="str">'tag'</span><span class="punc">,</span> <span class="str">'nomeDaAnim'</span><span class="punc">,</span> <span class="str">'prefixo'</span><span class="punc">,</span> <span class="str">'0 1 2 3'</span><span class="punc">,</span> fps<span class="punc">)</span>
+
+<span class="cmt">-- Tocar animação</span>
+<span class="fn">playAnim</span><span class="punc">(</span><span class="str">'tag'</span><span class="punc">,</span> <span class="str">'nomeDaAnim'</span><span class="punc">)</span>
+<span class="fn">playAnim</span><span class="punc">(</span><span class="str">'tag'</span><span class="punc">,</span> <span class="str">'nomeDaAnim'</span><span class="punc">,</span> <span class="kw">true</span><span class="punc">)</span>  <span class="cmt">-- force restart</span>
+
+<span class="cmt">-- Checar animação atual</span>
+<span class="kw">local</span> curAnim <span class="punc">=</span> <span class="fn">getProperty</span><span class="punc">(</span><span class="str">'boyfriend.animation.curAnim.name'</span><span class="punc">)</span>
+<span class="lang-tag">lua</span></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Texto (makeLuaText)</div>
+    <pre><span class="cmt">-- Criar texto (tag, conteúdo, largura, x, y)</span>
+<span class="fn">makeLuaText</span><span class="punc">(</span><span class="str">'myText'</span><span class="punc">,</span> <span class="str">'Hello World!'</span><span class="punc">,</span> <span class="num">0</span><span class="punc">,</span> <span class="num">100</span><span class="punc">,</span> <span class="num">100</span><span class="punc">)</span>
+<span class="fn">setTextSize</span><span class="punc">(</span><span class="str">'myText'</span><span class="punc">,</span> <span class="num">32</span><span class="punc">)</span>
+<span class="fn">setTextColor</span><span class="punc">(</span><span class="str">'myText'</span><span class="punc">,</span> <span class="str">'FFFFFF'</span><span class="punc">)</span>
+<span class="fn">setTextBorder</span><span class="punc">(</span><span class="str">'myText'</span><span class="punc">,</span> <span class="num">2</span><span class="punc">,</span> <span class="str">'000000'</span><span class="punc">)</span>
+<span class="fn">setTextAlignment</span><span class="punc">(</span><span class="str">'myText'</span><span class="punc">,</span> <span class="str">'center'</span><span class="punc">)</span>
+<span class="fn">addLuaText</span><span class="punc">(</span><span class="str">'myText'</span><span class="punc">)</span>
+
+<span class="cmt">-- Atualizar conteúdo</span>
+<span class="fn">setTextString</span><span class="punc">(</span><span class="str">'myText'</span><span class="punc">,</span> <span class="str">'Score: '</span> <span class="punc">..</span> score<span class="punc">)</span>
+
+<span class="cmt">-- Remover</span>
+<span class="fn">removeLuaText</span><span class="punc">(</span><span class="str">'myText'</span><span class="punc">)</span>
+<span class="lang-tag">lua</span></pre>
+  </div>
+</div>
+
+<!-- ===== TWEENS ===== -->
+<div class="section" id="tweens">
+  <div class="section-header">
+    <h2>Tweens & Timers</h2>
+    <p>Animações de propriedades e delays com easing</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">doTween</div>
+    <pre><span class="cmt">-- doTween(tag, objeto, propriedades, duração, easing)</span>
+<span class="fn">doTween</span><span class="punc">(</span><span class="str">'bfMove'</span><span class="punc">,</span> <span class="str">'boyfriend'</span><span class="punc">,</span> <span class="punc">{</span>x<span class="punc">=</span><span class="num">600</span><span class="punc">,</span> y<span class="punc">=</span><span class="num">300</span><span class="punc">},</span> <span class="num">1</span><span class="punc">,</span> <span class="str">'linear'</span><span class="punc">)</span>
+<span class="fn">doTween</span><span class="punc">(</span><span class="str">'zoomIn'</span><span class="punc">,</span> <span class="str">'camGame'</span><span class="punc">,</span> <span class="punc">{</span>zoom<span class="punc">=</span><span class="num">1.5</span><span class="punc">},</span> <span class="num">0.5</span><span class="punc">,</span> <span class="str">'sineOut'</span><span class="punc">)</span>
+<span class="fn">doTween</span><span class="punc">(</span><span class="str">'fadeOut'</span><span class="punc">,</span> <span class="str">'mySprite'</span><span class="punc">,</span> <span class="punc">{</span>alpha<span class="punc">=</span><span class="num">0</span><span class="punc">},</span> <span class="num">0.8</span><span class="punc">,</span> <span class="str">'cubeInOut'</span><span class="punc">)</span>
+
+<span class="cmt">-- Cancelar tween</span>
+<span class="fn">cancelTween</span><span class="punc">(</span><span class="str">'bfMove'</span><span class="punc">)</span>
+
+<span class="cmt">-- Callback ao terminar — onTweenCompleted(tag)</span>
+<span class="kw">function</span> <span class="fn">onTweenCompleted</span><span class="punc">(</span>tag<span class="punc">)</span>
+  <span class="kw">if</span> tag <span class="punc">==</span> <span class="str">'fadeOut'</span> <span class="kw">then</span>
+    <span class="fn">removeLuaSprite</span><span class="punc">(</span><span class="str">'mySprite'</span><span class="punc">)</span>
+  <span class="kw">end</span>
+<span class="kw">end</span>
+<span class="lang-tag">lua</span></pre>
+
+    <div class="tip"><strong>Easings comuns:</strong> <span class="chip">linear</span> <span class="chip">sineIn</span> <span class="chip">sineOut</span> <span class="chip">sineInOut</span> <span class="chip">cubeIn</span> <span class="chip">cubeOut</span> <span class="chip">cubeInOut</span> <span class="chip">bounceOut</span> <span class="chip">elasticOut</span> <span class="chip">backOut</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Timers</div>
+    <pre><span class="cmt">-- runTimer(tag, tempo, loops)</span>
+<span class="fn">runTimer</span><span class="punc">(</span><span class="str">'delay'</span><span class="punc">,</span> <span class="num">2</span><span class="punc">)</span>           <span class="cmt">-- 2 segundos, 1 vez</span>
+<span class="fn">runTimer</span><span class="punc">(</span><span class="str">'pulse'</span><span class="punc">,</span> <span class="num">0.5</span><span class="punc">,</span> <span class="num">0</span><span class="punc">)</span>     <span class="cmt">-- loop infinito</span>
+<span class="fn">runTimer</span><span class="punc">(</span><span class="str">'triple'</span><span class="punc">,</span> <span class="num">1</span><span class="punc">,</span> <span class="num">3</span><span class="punc">)</span>     <span class="cmt">-- repete 3 vezes</span>
+
+<span class="cmt">-- Callback — onTimerCompleted(tag, loops, loopsLeft)</span>
+<span class="kw">function</span> <span class="fn">onTimerCompleted</span><span class="punc">(</span>tag<span class="punc">,</span> loops<span class="punc">,</span> loopsLeft<span class="punc">)</span>
+  <span class="kw">if</span> tag <span class="punc">==</span> <span class="str">'delay'</span> <span class="kw">then</span>
+    <span class="fn">startCountdown</span><span class="punc">()</span>
+  <span class="kw">end</span>
+<span class="kw">end</span>
+
+<span class="cmt">-- Cancelar timer</span>
+<span class="fn">cancelTimer</span><span class="punc">(</span><span class="str">'pulse'</span><span class="punc">)</span>
+<span class="lang-tag">lua</span></pre>
+  </div>
+</div>
+
+<!-- ===== CAMERA ===== -->
+<div class="section" id="camera">
+  <div class="section-header">
+    <h2>Camera</h2>
+    <p>Controle de zoom, posição e flash das câmeras</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Zoom & Flash</div>
+    <pre><span class="cmt">-- Zoom da camera (camGame = world, camHUD = UI)</span>
+<span class="fn">setProperty</span><span class="punc">(</span><span class="str">'camGame.zoom'</span><span class="punc">,</span> <span class="num">1.2</span><span class="punc">)</span>
+<span class="fn">doTween</span><span class="punc">(</span><span class="str">'camZoom'</span><span class="punc">,</span> <span class="str">'camGame'</span><span class="punc">,</span> <span class="punc">{</span>zoom<span class="punc">=</span><span class="num">1.0</span><span class="punc">},</span> <span class="num">1</span><span class="punc">,</span> <span class="str">'sineOut'</span><span class="punc">)</span>
+
+<span class="cmt">-- Flash da câmera</span>
+<span class="fn">cameraFlash</span><span class="punc">(</span><span class="str">'game'</span><span class="punc">,</span> <span class="str">'FFFFFF'</span><span class="punc">,</span> <span class="num">0.5</span><span class="punc">,</span> <span class="kw">false</span><span class="punc">)</span>
+
+<span class="cmt">-- Shake</span>
+<span class="fn">cameraShake</span><span class="punc">(</span><span class="str">'game'</span><span class="punc">,</span> <span class="num">0.05</span><span class="punc">,</span> <span class="num">0.5</span><span class="punc">)</span>  <span class="cmt">-- intensidade, duração</span>
+
+<span class="cmt">-- Fade</span>
+<span class="fn">cameraFade</span><span class="punc">(</span><span class="str">'game'</span><span class="punc">,</span> <span class="str">'000000'</span><span class="punc">,</span> <span class="num">1</span><span class="punc">,</span> <span class="kw">false</span><span class="punc">)</span>  <span class="cmt">-- fade to black</span>
+
+<span class="cmt">-- Seguir objeto</span>
+<span class="fn">cameraFollow</span><span class="punc">(</span><span class="str">'boyfriend'</span><span class="punc">)</span>
+<span class="fn">cameraSetTarget</span><span class="punc">(</span><span class="str">'dad'</span><span class="punc">)</span>
+<span class="lang-tag">lua</span></pre>
+  </div>
+</div>
+
+<!-- ===== HSCRIPT ===== -->
+<div class="section" id="hscript">
+  <div class="section-header">
+    <h2>HScript (.hx)</h2>
+    <p>Scripting em Haxe puro — acesso direto às classes do engine</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Diferenças chave vs Lua <span class="badge badge-hx">HX</span></div>
+    <div class="compare">
+      <div class="compare-box">
+        <div class="compare-label lua">Lua</div>
+        <pre><span class="cmt">-- sem tipo, sem imports</span>
+<span class="kw">function</span> <span class="fn">onCreate</span><span class="punc">()</span>
+  <span class="fn">makeLuaSprite</span><span class="punc">(</span><span class="str">'s'</span><span class="punc">,</span><span class="str">'img'</span><span class="punc">,</span><span class="num">0</span><span class="punc">,</span><span class="num">0</span><span class="punc">)</span>
+  <span class="fn">addLuaSprite</span><span class="punc">(</span><span class="str">'s'</span><span class="punc">,</span> <span class="kw">true</span><span class="punc">)</span>
+<span class="kw">end</span>
+<span class="lang-tag">lua</span></pre>
+      </div>
+      <div class="compare-box">
+        <div class="compare-label hx">HScript</div>
+        <pre><span class="cmt">// imports diretos!</span>
+<span class="kw">import</span> flixel.FlxSprite<span class="punc">;</span>
+<span class="kw">import</span> states.PlayState<span class="punc">;</span>
+
+<span class="kw">function</span> <span class="fn">onCreate</span><span class="punc">() {</span>
+  <span class="kw">var</span> s<span class="punc">:</span><span class="type">FlxSprite</span> <span class="punc">=</span> <span class="kw">new</span> <span class="type">FlxSprite</span><span class="punc">(</span><span class="num">0</span><span class="punc">,</span> <span class="num">0</span><span class="punc">);</span>
+  s<span class="punc">.</span>loadGraphic<span class="punc">(</span><span class="type">Paths</span><span class="punc">.</span>image<span class="punc">(</span><span class="str">'img'</span><span class="punc">));</span>
+  <span class="type">PlayState</span><span class="punc">.</span>instance<span class="punc">.</span>add<span class="punc">(</span>s<span class="punc">);</span>
+<span class="punc">}</span>
+<span class="lang-tag">hscript</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Acesso ao PlayState via HScript</div>
+    <pre><span class="kw">import</span> states.PlayState<span class="punc">;</span>
+<span class="kw">import</span> backend.ClientPrefs<span class="punc">;</span>
+<span class="kw">import</span> flixel.FlxG<span class="punc">;</span>
+
+<span class="kw">var</span> game <span class="punc">=</span> <span class="type">PlayState</span><span class="punc">.</span>instance<span class="punc">;</span>
+
+<span class="kw">function</span> <span class="fn">onCreate</span><span class="punc">() {</span>
+  <span class="cmt">// Acesso direto a propriedades</span>
+  game<span class="punc">.</span>scrollSpeed <span class="punc">=</span> <span class="num">2.0</span><span class="punc">;</span>
+
+  <span class="cmt">// ClientPrefs</span>
+  <span class="kw">var</span> isDown <span class="punc">=</span> <span class="type">ClientPrefs</span><span class="punc">.</span>data<span class="punc">.</span>downScroll<span class="punc">;</span>
+
+  <span class="cmt">// FlxG direto</span>
+  <span class="type">FlxG</span><span class="punc">.</span>camera<span class="punc">.</span>zoom <span class="punc">=</span> <span class="num">1.2</span><span class="punc">;</span>
+<span class="punc">}</span>
+<span class="lang-tag">hscript</span></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title">callScript / stopScript — gerenciar HScripts via Lua</div>
+    <pre><span class="cmt">-- Rodar um HScript de dentro de Lua</span>
+<span class="fn">callScript</span><span class="punc">(</span><span class="str">'scripts/myHScript.hx'</span><span class="punc">)</span>
+
+<span class="cmt">-- Parar um HScript</span>
+<span class="fn">stopHScript</span><span class="punc">(</span><span class="str">'scripts/myHScript.hx'</span><span class="punc">)</span>
+
+<span class="cmt">-- Checar se está rodando</span>
+<span class="kw">local</span> running <span class="punc">=</span> <span class="fn">isRunning</span><span class="punc">(</span><span class="str">'scripts/myHScript.hx'</span><span class="punc">)</span>
+
+<span class="cmt">-- Compartilhar variável entre todos os scripts</span>
+<span class="fn">setVar</span><span class="punc">(</span><span class="str">'minhaVar'</span><span class="punc">,</span> <span class="num">42</span><span class="punc">)</span>
+<span class="fn">getVar</span><span class="punc">(</span><span class="str">'minhaVar'</span><span class="punc">)</span>
+<span class="lang-tag">lua</span></pre>
+  </div>
+
+  <div class="tip">
+    <strong>HScript no P-Slice:</strong> Usa SScript (HScript-Iris). Você tem acesso a praticamente todas as classes do engine — FlxSprite, FlxTween, FlxTimer, Paths, ClientPrefs, PlayState, etc. Muito mais poderoso que Lua para mecânicas complexas.
+  </div>
+</div>
+
+<!-- ===== EXEMPLOS ===== -->
+<div class="section" id="exemplos">
+  <div class="section-header">
+    <h2>Exemplos Completos</h2>
+    <p>Scripts prontos para usar ou adaptar</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">BF fica maior na vez dele <span class="badge badge-lua">LUA</span></div>
+    <pre><span class="kw">function</span> <span class="fn">onSectionHit</span><span class="punc">()</span>
+  <span class="kw">if</span> mustHitSection <span class="kw">then</span>
+    <span class="fn">doTween</span><span class="punc">(</span><span class="str">'bfScale'</span><span class="punc">,</span> <span class="str">'boyfriendGroup'</span><span class="punc">,</span>
+      <span class="punc">{</span>x<span class="punc">=</span><span class="num">1.3</span><span class="punc">,</span> y<span class="punc">=</span><span class="num">1.3</span><span class="punc">},</span> <span class="num">0.3</span><span class="punc">,</span> <span class="str">'elasticOut'</span><span class="punc">)</span>
+  <span class="kw">else</span>
+    <span class="fn">doTween</span><span class="punc">(</span><span class="str">'bfScale'</span><span class="punc">,</span> <span class="str">'boyfriendGroup'</span><span class="punc">,</span>
+      <span class="punc">{</span>x<span class="punc">=</span><span class="num">1</span><span class="punc">,</span> y<span class="punc">=</span><span class="num">1</span><span class="punc">},</span> <span class="num">0.3</span><span class="punc">,</span> <span class="str">'sineOut'</span><span class="punc">)</span>
+  <span class="kw">end</span>
+<span class="kw">end</span>
+<span class="lang-tag">lua</span></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Score HUD customizado <span class="badge badge-lua">LUA</span></div>
+    <pre><span class="kw">function</span> <span class="fn">onCreate</span><span class="punc">()</span>
+  <span class="fn">makeLuaText</span><span class="punc">(</span><span class="str">'customScore'</span><span class="punc">,</span> <span class="str">''</span><span class="punc">,</span> <span class="num">0</span><span class="punc">,</span> <span class="num">20</span><span class="punc">,</span> <span class="num">20</span><span class="punc">)</span>
+  <span class="fn">setTextSize</span><span class="punc">(</span><span class="str">'customScore'</span><span class="punc">,</span> <span class="num">28</span><span class="punc">)</span>
+  <span class="fn">setTextColor</span><span class="punc">(</span><span class="str">'customScore'</span><span class="punc">,</span> <span class="str">'FFFF00'</span><span class="punc">)</span>
+  <span class="fn">setTextBorder</span><span class="punc">(</span><span class="str">'customScore'</span><span class="punc">,</span> <span class="num">2</span><span class="punc">,</span> <span class="str">'000000'</span><span class="punc">)</span>
+  <span class="fn">setObjectCamera</span><span class="punc">(</span><span class="str">'customScore'</span><span class="punc">,</span> <span class="str">'hud'</span><span class="punc">)</span>
+  <span class="fn">addLuaText</span><span class="punc">(</span><span class="str">'customScore'</span><span class="punc">)</span>
+<span class="kw">end</span>
+
+<span class="kw">function</span> <span class="fn">onUpdate</span><span class="punc">(</span>elapsed<span class="punc">)</span>
+  <span class="fn">setTextString</span><span class="punc">(</span><span class="str">'customScore'</span><span class="punc">,</span>
+    <span class="str">'Score: '</span> <span class="punc">..</span> score <span class="punc">..</span>
+    <span class="str">' | Misses: '</span> <span class="punc">..</span> misses <span class="punc">..</span>
+    <span class="str">' | '</span> <span class="punc">..</span> ratingFC<span class="punc">)</span>
+<span class="kw">end</span>
+<span class="lang-tag">lua</span></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Cutscene de intro com vídeo <span class="badge badge-lua">LUA</span></div>
+    <pre><span class="kw">function</span> <span class="fn">onCreatePost</span><span class="punc">()</span>
+  <span class="kw">if</span> <span class="kw">not</span> seenCutscene <span class="kw">then</span>
+    startVideo<span class="punc">(</span><span class="str">'my_intro'</span><span class="punc">)</span>
+    <span class="cmt">-- startCountdown() é chamado automaticamente</span>
+    <span class="cmt">-- quando o vídeo termina</span>
+  <span class="kw">end</span>
+<span class="kw">end</span>
+<span class="lang-tag">lua</span></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Custom event handler <span class="badge badge-lua">LUA</span></div>
+    <pre><span class="kw">function</span> <span class="fn">onEvent</span><span class="punc">(</span>name<span class="punc">,</span> val1<span class="punc">,</span> val2<span class="punc">,</span> strumTime<span class="punc">)</span>
+  <span class="kw">if</span> name <span class="punc">==</span> <span class="str">'Screen Flash'</span> <span class="kw">then</span>
+    <span class="fn">cameraFlash</span><span class="punc">(</span><span class="str">'game'</span><span class="punc">,</span> val1<span class="punc">,</span> <span class="fn">tonumber</span><span class="punc">(</span>val2<span class="punc">),</span> <span class="kw">false</span><span class="punc">)</span>
+  <span class="kw">elseif</span> name <span class="punc">==</span> <span class="str">'Camera Shake'</span> <span class="kw">then</span>
+    <span class="fn">cameraShake</span><span class="punc">(</span><span class="str">'game'</span><span class="punc">,</span> <span class="fn">tonumber</span><span class="punc">(</span>val1<span class="punc">),</span> <span class="fn">tonumber</span><span class="punc">(</span>val2<span class="punc">))</span>
+  <span class="kw">end</span>
+<span class="kw">end</span>
+<span class="lang-tag">lua</span></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Sprite animado no beat — HScript <span class="badge badge-hx">HX</span></div>
+    <pre><span class="kw">import</span> flixel.FlxSprite<span class="punc">;</span>
+<span class="kw">import</span> flixel.tweens.FlxTween<span class="punc">;</span>
+<span class="kw">import</span> states.PlayState<span class="punc">;</span>
+
+<span class="kw">var</span> game <span class="punc">=</span> <span class="type">PlayState</span><span class="punc">.</span>instance<span class="punc">;</span>
+<span class="kw">var</span> beatSprite<span class="punc">:</span><span class="type">FlxSprite</span><span class="punc">;</span>
+
+<span class="kw">function</span> <span class="fn">onCreate</span><span class="punc">() {</span>
+  beatSprite <span class="punc">=</span> <span class="kw">new</span> <span class="type">FlxSprite</span><span class="punc">(</span><span class="num">100</span><span class="punc">,</span> <span class="num">100</span><span class="punc">);</span>
+  beatSprite<span class="punc">.</span>loadGraphic<span class="punc">(</span><span class="type">Paths</span><span class="punc">.</span>image<span class="punc">(</span><span class="str">'mySprite'</span><span class="punc">));</span>
+  beatSprite<span class="punc">.</span>cameras <span class="punc">= [</span>game<span class="punc">.</span>camHUD<span class="punc">];</span>
+  game<span class="punc">.</span>add<span class="punc">(</span>beatSprite<span class="punc">);</span>
+<span class="punc">}</span>
+
+<span class="kw">function</span> <span class="fn">onBeatHit</span><span class="punc">() {</span>
+  beatSprite<span class="punc">.</span>scale<span class="punc">.</span>set<span class="punc">(</span><span class="num">1.2</span><span class="punc">,</span> <span class="num">1.2</span><span class="punc">);</span>
+  <span class="type">FlxTween</span><span class="punc">.</span>tween<span class="punc">(</span>beatSprite<span class="punc">.</span>scale<span class="punc">,</span>
+    <span class="punc">{</span>x<span class="punc">:</span> <span class="num">1</span><span class="punc">,</span> y<span class="punc">:</span> <span class="num">1</span><span class="punc">},</span>
+    <span class="num">0.2</span><span class="punc">,</span>
+    <span class="punc">{</span>ease<span class="punc">:</span> flixel<span class="punc">.</span>tweens<span class="punc">.</span>FlxEase<span class="punc">.</span>sineOut<span class="punc">});</span>
+<span class="punc">}</span>
+<span class="lang-tag">hscript</span></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Note type customizado <span class="badge badge-lua">LUA</span></div>
+    <pre><span class="cmt">-- Arquivo: custom_notetypes/Invisible Note.lua</span>
+<span class="kw">function</span> <span class="fn">onSpawnNote</span><span class="punc">(</span>id<span class="punc">,</span> direction<span class="punc">,</span> noteType<span class="punc">,</span> isSustain<span class="punc">)</span>
+  <span class="kw">if</span> noteType <span class="punc">==</span> <span class="str">'Invisible Note'</span> <span class="kw">then</span>
+    <span class="fn">setPropertyFromGroup</span><span class="punc">(</span><span class="str">'notes'</span><span class="punc">,</span> id<span class="punc">,</span> <span class="str">'visible'</span><span class="punc">,</span> <span class="kw">false</span><span class="punc">)</span>
+    <span class="fn">setPropertyFromGroup</span><span class="punc">(</span><span class="str">'notes'</span><span class="punc">,</span> id<span class="punc">,</span> <span class="str">'ignoreNote'</span><span class="punc">,</span> <span class="kw">false</span><span class="punc">)</span>
+  <span class="kw">end</span>
+<span class="kw">end</span>
+
+<span class="kw">function</span> <span class="fn">goodNoteHit</span><span class="punc">(</span>id<span class="punc">,</span> direction<span class="punc">,</span> noteType<span class="punc">,</span> isSustain<span class="punc">)</span>
+  <span class="kw">if</span> noteType <span class="punc">==</span> <span class="str">'Invisible Note'</span> <span class="kw">then</span>
+    <span class="cmt">-- pontos normais, sem feedback visual</span>
+  <span class="kw">end</span>
+<span class="kw">end</span>
+<span class="lang-tag">lua</span></pre>
+  </div>
+</div>
+
+</main>
+
+<script>
+function switchTab(id) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>
