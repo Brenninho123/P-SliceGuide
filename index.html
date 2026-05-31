@@ -3,341 +3,132 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>P-Slice · Guia de Scripts</title>
+<title>P-Slice · Script Guide</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap');
-
-  :root {
-    --bg: #0a0a0f;
-    --surface: #111118;
-    --surface2: #1a1a24;
-    --border: #2a2a3a;
-    --accent: #7c6aff;
-    --accent2: #ff6a9b;
-    --accent3: #6affd4;
-    --text: #e8e6f0;
-    --text2: #9896b0;
-    --lua: #f7c948;
-    --hscript: #6affd4;
-    --warning: #ff9f43;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Syne', sans-serif;
-    min-height: 100vh;
-  }
-
-  /* HEADER */
-  header {
-    padding: 3rem 2rem 2rem;
-    border-bottom: 1px solid var(--border);
-    background: linear-gradient(180deg, #0d0b1a 0%, var(--bg) 100%);
-    position: relative;
-    overflow: hidden;
-  }
-  header::before {
-    content: '';
-    position: absolute;
-    top: -60px; left: -60px;
-    width: 300px; height: 300px;
-    background: radial-gradient(circle, rgba(124,106,255,0.15) 0%, transparent 70%);
-    pointer-events: none;
-  }
-  header::after {
-    content: '';
-    position: absolute;
-    top: -40px; right: 10%;
-    width: 200px; height: 200px;
-    background: radial-gradient(circle, rgba(106,255,212,0.1) 0%, transparent 70%);
-    pointer-events: none;
-  }
-  .header-tag {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--accent);
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    margin-bottom: 0.5rem;
-  }
-  h1 {
-    font-size: clamp(2rem, 5vw, 3.5rem);
-    font-weight: 800;
-    line-height: 1.05;
-    letter-spacing: -1px;
-  }
-  h1 span.p { color: var(--accent); }
-  h1 span.slice { color: var(--accent2); }
-  .subtitle {
-    margin-top: 0.75rem;
-    color: var(--text2);
-    font-size: 1rem;
-    font-weight: 400;
-    max-width: 500px;
-  }
-
-  /* NAV TABS */
-  nav {
-    display: flex;
-    gap: 0.25rem;
-    padding: 1rem 2rem;
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-  nav::-webkit-scrollbar { display: none; }
-  .tab {
-    padding: 0.5rem 1.1rem;
-    border-radius: 6px;
-    border: 1px solid transparent;
-    font-family: 'Space Mono', monospace;
-    font-size: 0.78rem;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.15s;
-    background: transparent;
-    color: var(--text2);
-  }
-  .tab:hover { color: var(--text); border-color: var(--border); }
-  .tab.active {
-    background: var(--accent);
-    color: #fff;
-    border-color: var(--accent);
-  }
-
-  /* MAIN */
-  main {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 2rem;
-  }
-
-  .section { display: none; }
-  .section.active { display: block; }
-
-  /* CARDS */
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin-bottom: 1.25rem;
-  }
-  .card-title {
-    font-family: 'Space Mono', monospace;
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--accent3);
-    margin-bottom: 0.75rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  .card-title .badge {
-    font-size: 0.6rem;
-    padding: 2px 7px;
-    border-radius: 20px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-  .badge-lua { background: rgba(247,201,72,0.15); color: var(--lua); border: 1px solid rgba(247,201,72,0.3); }
-  .badge-hx { background: rgba(106,255,212,0.15); color: var(--hscript); border: 1px solid rgba(106,255,212,0.3); }
-  .badge-both {
-    background: rgba(124,106,255,0.15); color: var(--accent);
-    border: 1px solid rgba(124,106,255,0.3);
-  }
-
-  p.desc { color: var(--text2); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1rem; }
-
-  /* CODE */
-  pre {
-    background: #070710;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 1rem 1.25rem;
-    overflow-x: auto;
-    font-family: 'Space Mono', monospace;
-    font-size: 0.78rem;
-    line-height: 1.7;
-    margin: 0.5rem 0;
-    position: relative;
-  }
-  pre .lang-tag {
-    position: absolute;
-    top: 8px; right: 10px;
-    font-size: 0.6rem;
-    color: var(--text2);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-  .kw { color: #c792ea; }
-  .fn { color: #82aaff; }
-  .str { color: #c3e88d; }
-  .num { color: var(--lua); }
-  .cmt { color: #546e7a; font-style: italic; }
-  .type { color: var(--accent3); }
-  .punc { color: #89ddff; }
-
-  /* GRID */
-  .grid2 {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-  }
-  @media (max-width: 640px) { .grid2 { grid-template-columns: 1fr; } }
-
-  /* TABLE */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.83rem;
-    margin: 0.5rem 0;
-  }
-  th {
-    text-align: left;
-    padding: 0.5rem 0.75rem;
-    font-family: 'Space Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--text2);
-    border-bottom: 1px solid var(--border);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-  td {
-    padding: 0.5rem 0.75rem;
-    border-bottom: 1px solid rgba(42,42,58,0.5);
-    vertical-align: top;
-  }
-  td code {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.75rem;
-    color: var(--accent3);
-    background: rgba(106,255,212,0.07);
-    padding: 1px 5px;
-    border-radius: 3px;
-  }
-  td.var-name { color: var(--lua); font-family: 'Space Mono', monospace; font-size: 0.78rem; }
-  td.desc-col { color: var(--text2); }
-
-  /* SECTION HEADER */
-  .section-header {
-    margin-bottom: 1.5rem;
-  }
-  .section-header h2 {
-    font-size: 1.6rem;
-    font-weight: 800;
-    letter-spacing: -0.5px;
-  }
-  .section-header p {
-    color: var(--text2);
-    margin-top: 0.4rem;
-    font-size: 0.9rem;
-  }
-
-  /* COMPARE BOX */
-  .compare {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-  }
-  @media (max-width: 600px) { .compare { grid-template-columns: 1fr; } }
-  .compare-box { }
-  .compare-label {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.68rem;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 0.4rem;
-    font-weight: 700;
-  }
-  .compare-label.lua { color: var(--lua); }
-  .compare-label.hx { color: var(--hscript); }
-
-  /* CHIP */
-  .chip {
-    display: inline-block;
-    font-family: 'Space Mono', monospace;
-    font-size: 0.68rem;
-    padding: 2px 8px;
-    border-radius: 4px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    color: var(--text2);
-    margin: 2px;
-  }
-
-  /* DIVIDER */
-  .divider {
-    border: none;
-    border-top: 1px solid var(--border);
-    margin: 1.5rem 0;
-  }
-
-  /* CALLBACK TABLE */
-  .cb-row {
-    display: flex;
-    align-items: flex-start;
-    gap: 1rem;
-    padding: 0.6rem 0;
-    border-bottom: 1px solid rgba(42,42,58,0.4);
-  }
-  .cb-name {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.78rem;
-    color: var(--accent2);
-    min-width: 200px;
-    flex-shrink: 0;
-  }
-  .cb-desc { color: var(--text2); font-size: 0.85rem; line-height: 1.5; }
-
-  /* TIP BOX */
-  .tip {
-    background: rgba(124,106,255,0.08);
-    border-left: 3px solid var(--accent);
-    padding: 0.75rem 1rem;
-    border-radius: 0 8px 8px 0;
-    margin: 0.75rem 0;
-    font-size: 0.87rem;
-    color: var(--text2);
-  }
-  .tip strong { color: var(--accent); }
-
-  .warn {
-    background: rgba(255,159,67,0.08);
-    border-left: 3px solid var(--warning);
-    padding: 0.75rem 1rem;
-    border-radius: 0 8px 8px 0;
-    margin: 0.75rem 0;
-    font-size: 0.87rem;
-    color: var(--text2);
-  }
-  .warn strong { color: var(--warning); }
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap');
+:root{--bg:#0a0a0f;--surface:#111118;--surface2:#1a1a24;--border:#2a2a3a;--accent:#7c6aff;--accent2:#ff6a9b;--accent3:#6affd4;--text:#e8e6f0;--text2:#9896b0;--lua:#f7c948;--hscript:#6affd4;--warning:#ff9f43;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;min-height:100vh;}
+/* HEADER */
+header{padding:2.5rem 2rem 1.8rem;border-bottom:1px solid var(--border);background:linear-gradient(180deg,#0d0b1a 0%,var(--bg) 100%);position:relative;overflow:hidden;}
+header::before{content:'';position:absolute;top:-60px;left:-60px;width:300px;height:300px;background:radial-gradient(circle,rgba(124,106,255,.15) 0%,transparent 70%);pointer-events:none;}
+header::after{content:'';position:absolute;top:-40px;right:10%;width:200px;height:200px;background:radial-gradient(circle,rgba(106,255,212,.1) 0%,transparent 70%);pointer-events:none;}
+.header-inner{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+.header-tag{font-family:'Space Mono',monospace;font-size:.7rem;color:var(--accent);letter-spacing:3px;text-transform:uppercase;margin-bottom:.4rem;}
+h1{font-size:clamp(1.8rem,4vw,3rem);font-weight:800;line-height:1.05;letter-spacing:-1px;}
+h1 span.p{color:var(--accent);}h1 span.sl{color:var(--accent2);}
+.subtitle{margin-top:.5rem;color:var(--text2);font-size:.9rem;max-width:480px;}
+/* LANG SELECTOR */
+.lang-picker{display:flex;gap:.4rem;align-items:center;flex-shrink:0;}
+.lang-btn{padding:.4rem .85rem;border-radius:6px;border:1px solid var(--border);font-family:'Space Mono',monospace;font-size:.7rem;cursor:pointer;background:transparent;color:var(--text2);transition:all .15s;white-space:nowrap;}
+.lang-btn:hover{color:var(--text);border-color:var(--accent);}
+.lang-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+/* NAV */
+nav{display:flex;gap:.25rem;padding:.85rem 2rem;background:var(--surface);border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;}
+nav::-webkit-scrollbar{display:none;}
+.tab{padding:.45rem 1rem;border-radius:6px;border:1px solid transparent;font-family:'Space Mono',monospace;font-size:.75rem;cursor:pointer;white-space:nowrap;transition:all .15s;background:transparent;color:var(--text2);}
+.tab:hover{color:var(--text);border-color:var(--border);}
+.tab.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+/* MAIN */
+main{max-width:980px;margin:0 auto;padding:2rem;}
+.section{display:none;}.section.active{display:block;}
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.4rem;margin-bottom:1.2rem;}
+.card-title{font-family:'Space Mono',monospace;font-size:.95rem;font-weight:700;color:var(--accent3);margin-bottom:.7rem;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;}
+.badge{font-size:.6rem;padding:2px 7px;border-radius:20px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+.badge-lua{background:rgba(247,201,72,.15);color:var(--lua);border:1px solid rgba(247,201,72,.3);}
+.badge-hx{background:rgba(106,255,212,.15);color:var(--hscript);border:1px solid rgba(106,255,212,.3);}
+.badge-both{background:rgba(124,106,255,.15);color:var(--accent);border:1px solid rgba(124,106,255,.3);}
+p.desc{color:var(--text2);font-size:.88rem;line-height:1.65;margin-bottom:.9rem;}
+/* CODE */
+pre{background:#070710;border:1px solid var(--border);border-radius:8px;padding:.9rem 1.1rem;overflow-x:auto;font-family:'Space Mono',monospace;font-size:.76rem;line-height:1.75;margin:.5rem 0;position:relative;}
+pre .lang-tag{position:absolute;top:7px;right:9px;font-size:.58rem;color:var(--text2);letter-spacing:1px;text-transform:uppercase;}
+.kw{color:#c792ea;}.fn{color:#82aaff;}.str{color:#c3e88d;}.num{color:var(--lua);}.cmt{color:#546e7a;font-style:italic;}.type{color:var(--accent3);}.punc{color:#89ddff;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+@media(max-width:640px){.grid2{grid-template-columns:1fr;}}
+table{width:100%;border-collapse:collapse;font-size:.82rem;margin:.5rem 0;}
+th{text-align:left;padding:.45rem .7rem;font-family:'Space Mono',monospace;font-size:.68rem;color:var(--text2);border-bottom:1px solid var(--border);letter-spacing:1px;text-transform:uppercase;}
+td{padding:.45rem .7rem;border-bottom:1px solid rgba(42,42,58,.5);vertical-align:top;}
+td code{font-family:'Space Mono',monospace;font-size:.73rem;color:var(--accent3);background:rgba(106,255,212,.07);padding:1px 5px;border-radius:3px;}
+td.var-name{color:var(--lua);font-family:'Space Mono',monospace;font-size:.76rem;}
+td.desc-col{color:var(--text2);}
+.section-header{margin-bottom:1.4rem;}
+.section-header h2{font-size:1.5rem;font-weight:800;letter-spacing:-.5px;}
+.section-header p{color:var(--text2);margin-top:.35rem;font-size:.88rem;}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+@media(max-width:600px){.compare{grid-template-columns:1fr;}}
+.compare-label{font-family:'Space Mono',monospace;font-size:.66rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:.35rem;font-weight:700;}
+.compare-label.lua{color:var(--lua);}.compare-label.hx{color:var(--hscript);}
+.chip{display:inline-block;font-family:'Space Mono',monospace;font-size:.66rem;padding:2px 7px;border-radius:4px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);margin:2px;}
+.cb-row{display:flex;align-items:flex-start;gap:1rem;padding:.55rem 0;border-bottom:1px solid rgba(42,42,58,.4);}
+.cb-name{font-family:'Space Mono',monospace;font-size:.76rem;color:var(--accent2);min-width:200px;flex-shrink:0;}
+.cb-desc{color:var(--text2);font-size:.83rem;line-height:1.5;}
+.tip{background:rgba(124,106,255,.08);border-left:3px solid var(--accent);padding:.7rem 1rem;border-radius:0 8px 8px 0;margin:.75rem 0;font-size:.85rem;color:var(--text2);}
+.tip strong{color:var(--accent);}
+.warn{background:rgba(255,159,67,.08);border-left:3px solid var(--warning);padding:.7rem 1rem;border-radius:0 8px 8px 0;margin:.75rem 0;font-size:.85rem;color:var(--text2);}
+.warn strong{color:var(--warning);}
+/* ── GENERATOR ── */
+.gen-grid{display:grid;grid-template-columns:360px 1fr;gap:1.5rem;align-items:start;}
+@media(max-width:800px){.gen-grid{grid-template-columns:1fr;}}
+.gen-panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.4rem;}
+.gen-panel h3{font-family:'Space Mono',monospace;font-size:.88rem;color:var(--accent3);margin-bottom:1.1rem;letter-spacing:1px;text-transform:uppercase;}
+.form-row{margin-bottom:.9rem;}
+.form-row label{display:block;font-family:'Space Mono',monospace;font-size:.68rem;color:var(--text2);letter-spacing:1px;text-transform:uppercase;margin-bottom:.35rem;}
+.form-row input,.form-row select{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:.5rem .7rem;color:var(--text);font-family:'Space Mono',monospace;font-size:.78rem;outline:none;transition:border-color .15s;}
+.form-row input:focus,.form-row select:focus{border-color:var(--accent);}
+.form-row select option{background:var(--surface2);}
+.cb-checklist{display:flex;flex-direction:column;gap:.35rem;max-height:220px;overflow-y:auto;padding:.1rem 0;}
+.cb-check{display:flex;align-items:center;gap:.5rem;cursor:pointer;padding:.25rem .3rem;border-radius:4px;transition:background .12s;}
+.cb-check:hover{background:var(--surface2);}
+.cb-check input{accent-color:var(--accent);width:13px;height:13px;flex-shrink:0;}
+.cb-check span{font-family:'Space Mono',monospace;font-size:.72rem;color:var(--text2);}
+.gen-btns{display:flex;gap:.5rem;margin-top:1.1rem;flex-wrap:wrap;}
+.btn{padding:.55rem 1.1rem;border-radius:7px;border:none;font-family:'Space Mono',monospace;font-size:.76rem;font-weight:700;cursor:pointer;transition:all .15s;letter-spacing:.5px;}
+.btn-primary{background:var(--accent);color:#fff;}
+.btn-primary:hover{background:#9580ff;}
+.btn-secondary{background:var(--surface2);color:var(--text2);border:1px solid var(--border);}
+.btn-secondary:hover{color:var(--text);border-color:var(--accent);}
+.btn-copy{background:rgba(106,255,212,.12);color:var(--accent3);border:1px solid rgba(106,255,212,.25);}
+.btn-copy:hover{background:rgba(106,255,212,.2);}
+.btn-copy.copied{background:rgba(106,255,212,.25);color:#fff;}
+.output-panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.output-header{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1.1rem;background:var(--surface2);border-bottom:1px solid var(--border);}
+.output-lang-tag{font-family:'Space Mono',monospace;font-size:.68rem;color:var(--text2);letter-spacing:2px;text-transform:uppercase;}
+.output-actions{display:flex;gap:.4rem;}
+.output-code{padding:1.1rem;overflow-x:auto;min-height:300px;max-height:70vh;overflow-y:auto;}
+.output-code pre{background:transparent;border:none;padding:0;margin:0;font-size:.76rem;line-height:1.75;white-space:pre;}
+.output-placeholder{display:flex;align-items:center;justify-content:center;min-height:300px;color:var(--text2);font-family:'Space Mono',monospace;font-size:.8rem;text-align:center;flex-direction:column;gap:.5rem;opacity:.5;}
+.output-placeholder .icon{font-size:2rem;}
 </style>
 </head>
 <body>
-
 <header>
-  <div class="header-tag">// Guia de Scripting</div>
-  <h1><span class="p">P</span><span class="slice">-Slice</span> Engine</h1>
-  <p class="subtitle">Referência completa para scripts em Lua e HScript (PE 1.0 base) — P-Slice 3.4.x</p>
+  <div class="header-inner">
+    <div>
+      <div class="header-tag">// Scripting Guide</div>
+      <h1><span class="p">P</span><span class="sl">-Slice</span> Engine</h1>
+      <p class="subtitle" data-i18n="subtitle">Referência completa para scripts em Lua e HScript (PE 1.0) — P-Slice 3.4.x</p>
+    </div>
+    <div class="lang-picker">
+      <button class="lang-btn active" onclick="setLang('pt')">🇧🇷 PT-BR</button>
+      <button class="lang-btn" onclick="setLang('en')">🇺🇸 EN</button>
+      <button class="lang-btn" onclick="setLang('es')">🇪🇸 ES</button>
+    </div>
+  </div>
 </header>
 
 <nav>
-  <button class="tab active" onclick="switchTab('intro')">Intro</button>
-  <button class="tab" onclick="switchTab('callbacks')">Callbacks</button>
-  <button class="tab" onclick="switchTab('variaveis')">Variáveis</button>
-  <button class="tab" onclick="switchTab('playstate')">PlayState</button>
-  <button class="tab" onclick="switchTab('reflection')">Reflection</button>
-  <button class="tab" onclick="switchTab('sprites')">Sprites</button>
-  <button class="tab" onclick="switchTab('tweens')">Tweens</button>
-  <button class="tab" onclick="switchTab('camera')">Camera</button>
-  <button class="tab" onclick="switchTab('hscript')">HScript</button>
-  <button class="tab" onclick="switchTab('exemplos')">Exemplos</button>
+  <button class="tab active" onclick="switchTab('intro')" data-tab="intro" data-i18n-tab="tab_intro">Intro</button>
+  <button class="tab" onclick="switchTab('callbacks')" data-tab="callbacks" data-i18n-tab="tab_callbacks">Callbacks</button>
+  <button class="tab" onclick="switchTab('variaveis')" data-tab="variaveis" data-i18n-tab="tab_vars">Variáveis</button>
+  <button class="tab" onclick="switchTab('playstate')" data-tab="playstate" data-i18n-tab="tab_playstate">PlayState</button>
+  <button class="tab" onclick="switchTab('reflection')" data-tab="reflection" data-i18n-tab="tab_reflection">Reflection</button>
+  <button class="tab" onclick="switchTab('sprites')" data-tab="sprites" data-i18n-tab="tab_sprites">Sprites</button>
+  <button class="tab" onclick="switchTab('tweens')" data-tab="tweens" data-i18n-tab="tab_tweens">Tweens</button>
+  <button class="tab" onclick="switchTab('camera')" data-tab="camera" data-i18n-tab="tab_camera">Camera</button>
+  <button class="tab" onclick="switchTab('hscript')" data-tab="hscript" data-i18n-tab="tab_hscript">HScript</button>
+  <button class="tab" onclick="switchTab('exemplos')" data-tab="exemplos" data-i18n-tab="tab_examples">Exemplos</button>
+  <button class="tab" onclick="switchTab('generator')" data-tab="generator" data-i18n-tab="tab_generator">⚡ Gerador</button>
 </nav>
 
 <main>
@@ -345,162 +136,95 @@
 <!-- ===== INTRO ===== -->
 <div class="section active" id="intro">
   <div class="section-header">
-    <h2>Tipos de Script</h2>
-    <p>Onde colocar cada script e quando ele roda</p>
+    <h2 data-i18n="intro_title">Tipos de Script</h2>
+    <p data-i18n="intro_sub">Onde colocar cada script e quando ele roda</p>
   </div>
-
   <div class="card">
-    <div class="card-title">Locais de Script <span class="badge badge-both">LUA + HX</span></div>
+    <div class="card-title" data-i18n="intro_locations">Locais de Script <span class="badge badge-both">LUA + HX</span></div>
     <table>
-      <tr><th>Tipo</th><th>Caminho</th><th>Quando roda</th></tr>
-      <tr><td class="var-name">Song</td><td><code>songs/minha-musica/</code></td><td class="desc-col">Só nessa música específica</td></tr>
-      <tr><td class="var-name">Stage</td><td><code>stages/</code> (mesmo nome do .json)</td><td class="desc-col">Só quando o stage da música é carregado</td></tr>
-      <tr><td class="var-name">Character</td><td><code>characters/</code> (mesmo nome do .json)</td><td class="desc-col">Só quando o personagem está na música</td></tr>
-      <tr><td class="var-name">Note Type</td><td><code>custom_notetypes/</code></td><td class="desc-col">Só se esse tipo de nota está no chart</td></tr>
-      <tr><td class="var-name">Event</td><td><code>custom_events/</code></td><td class="desc-col">Só se o evento está no chart</td></tr>
-      <tr><td class="var-name">Global</td><td><code>scripts/</code></td><td class="desc-col">Sempre, em toda música do mod</td></tr>
+      <tr><th data-i18n="th_type">Tipo</th><th data-i18n="th_path">Caminho</th><th data-i18n="th_when">Quando roda</th></tr>
+      <tr><td class="var-name">Song</td><td><code>songs/minha-musica/</code></td><td class="desc-col" data-i18n="loc_song">Só nessa música específica</td></tr>
+      <tr><td class="var-name">Stage</td><td><code>stages/</code></td><td class="desc-col" data-i18n="loc_stage">Só quando o stage é carregado</td></tr>
+      <tr><td class="var-name">Character</td><td><code>characters/</code></td><td class="desc-col" data-i18n="loc_char">Só quando o personagem está na música</td></tr>
+      <tr><td class="var-name">Note Type</td><td><code>custom_notetypes/</code></td><td class="desc-col" data-i18n="loc_notetype">Só se esse tipo de nota está no chart</td></tr>
+      <tr><td class="var-name">Event</td><td><code>custom_events/</code></td><td class="desc-col" data-i18n="loc_event">Só se o evento está no chart</td></tr>
+      <tr><td class="var-name">Global</td><td><code>scripts/</code></td><td class="desc-col" data-i18n="loc_global">Sempre, em toda música do mod</td></tr>
     </table>
   </div>
-
   <div class="compare">
-    <div class="compare-box">
-      <div class="compare-label lua">● Lua — Template base</div>
+    <div>
+      <div class="compare-label lua">● Lua</div>
       <pre><span class="cmt">-- Callbacks principais</span>
 <span class="kw">function</span> <span class="fn">onCreate</span><span class="punc">()</span>
-  <span class="cmt">-- roda ao criar o estado</span>
 <span class="kw">end</span>
-
 <span class="kw">function</span> <span class="fn">onCreatePost</span><span class="punc">()</span>
-  <span class="cmt">-- após criar tudo</span>
 <span class="kw">end</span>
-
 <span class="kw">function</span> <span class="fn">onUpdate</span><span class="punc">(</span>elapsed<span class="punc">)</span>
-  <span class="cmt">-- todo frame</span>
 <span class="kw">end</span>
-
 <span class="kw">function</span> <span class="fn">onBeatHit</span><span class="punc">()</span>
-  <span class="cmt">-- todo beat (4 steps)</span>
 <span class="kw">end</span>
-
 <span class="kw">function</span> <span class="fn">onStepHit</span><span class="punc">()</span>
-  <span class="cmt">-- todo step (1/4 beat)</span>
-<span class="kw">end</span>
-<span class="lang-tag">lua</span></pre>
+<span class="kw">end</span><span class="lang-tag">lua</span></pre>
     </div>
-    <div class="compare-box">
-      <div class="compare-label hx">● HScript (.hx) — Template base</div>
-      <pre><span class="cmt">// Mesmos callbacks, sintaxe Haxe</span>
+    <div>
+      <div class="compare-label hx">● HScript</div>
+      <pre><span class="cmt">// Callbacks principais</span>
 <span class="kw">function</span> <span class="fn">onCreate</span><span class="punc">() {</span>
-  <span class="cmt">// roda ao criar o estado</span>
 <span class="punc">}</span>
-
 <span class="kw">function</span> <span class="fn">onCreatePost</span><span class="punc">() {</span>
-  <span class="cmt">// após criar tudo</span>
 <span class="punc">}</span>
-
 <span class="kw">function</span> <span class="fn">onUpdate</span><span class="punc">(</span>elapsed<span class="punc">) {</span>
-  <span class="cmt">// todo frame</span>
 <span class="punc">}</span>
-
 <span class="kw">function</span> <span class="fn">onBeatHit</span><span class="punc">() {</span>
-  <span class="cmt">// todo beat</span>
 <span class="punc">}</span>
-
 <span class="kw">function</span> <span class="fn">onStepHit</span><span class="punc">() {</span>
-  <span class="cmt">// todo step</span>
-<span class="punc">}</span>
-<span class="lang-tag">hscript</span></pre>
+<span class="punc">}</span><span class="lang-tag">hscript</span></pre>
     </div>
   </div>
-
-  <div class="tip">
-    <strong>P-Slice vs Psych puro:</strong> P-Slice herda toda a API Lua/HScript do PE 1.0. Scripts feitos pra PE 1.0 funcionam no P-Slice — mas o P-Slice adiciona variáveis extras de V-Slice (ex: freeplay metadata).
-  </div>
-
-  <div class="warn">
-    <strong>Project.xml:</strong> Certifique que <code>LUA_ALLOWED</code> e <code>HSCRIPT_ALLOWED</code> estão definidos no Project.xml do P-Slice. Sem eles, os scripts são ignorados silenciosamente.
-  </div>
+  <div class="tip"><strong data-i18n="tip_pslice_label">P-Slice:</strong> <span data-i18n="tip_pslice">Herda toda a API Lua/HScript do PE 1.0. Scripts feitos para PE 1.0 funcionam no P-Slice.</span></div>
+  <div class="warn"><strong data-i18n="warn_xml_label">Project.xml:</strong> <span data-i18n="warn_xml">Certifique que LUA_ALLOWED e HSCRIPT_ALLOWED estão definidos.</span></div>
 </div>
 
 <!-- ===== CALLBACKS ===== -->
 <div class="section" id="callbacks">
   <div class="section-header">
-    <h2>Callbacks</h2>
-    <p>Funções chamadas automaticamente pelo engine em resposta a eventos do jogo</p>
+    <h2 data-i18n="cb_title">Callbacks</h2>
+    <p data-i18n="cb_sub">Funções chamadas automaticamente pelo engine</p>
   </div>
-
   <div class="card">
-    <div class="card-title">Ciclo de Vida</div>
-    <div class="cb-row"><div class="cb-name">onCreate()</div><div class="cb-desc">Início da criação do estado. Use para criar sprites e inicializar variáveis.</div></div>
-    <div class="cb-row"><div class="cb-name">onCreatePost()</div><div class="cb-desc">Após tudo criado. Personagens e strums já existem aqui.</div></div>
-    <div class="cb-row"><div class="cb-name">onUpdate(elapsed)</div><div class="cb-desc">Todo frame. <code>elapsed</code> = tempo desde o último frame em segundos.</div></div>
-    <div class="cb-row"><div class="cb-name">onUpdatePost(elapsed)</div><div class="cb-desc">Após o update do PlayState. Mais seguro para modificar posições.</div></div>
-    <div class="cb-row"><div class="cb-name">onDestroy()</div><div class="cb-desc">Quando o estado é destruído (fim de música ou saída).</div></div>
+    <div class="card-title" data-i18n="cb_lifecycle">Ciclo de Vida</div>
+    <div class="cb-row"><div class="cb-name">onCreate()</div><div class="cb-desc" data-i18n="cb_onCreate">Início da criação do estado. Use para criar sprites e variáveis.</div></div>
+    <div class="cb-row"><div class="cb-name">onCreatePost()</div><div class="cb-desc" data-i18n="cb_onCreatePost">Após tudo criado. Personagens e strums já existem aqui.</div></div>
+    <div class="cb-row"><div class="cb-name">onUpdate(elapsed)</div><div class="cb-desc" data-i18n="cb_onUpdate">Todo frame. elapsed = segundos desde o último frame.</div></div>
+    <div class="cb-row"><div class="cb-name">onUpdatePost(elapsed)</div><div class="cb-desc" data-i18n="cb_onUpdatePost">Após o update do PlayState.</div></div>
+    <div class="cb-row"><div class="cb-name">onDestroy()</div><div class="cb-desc" data-i18n="cb_onDestroy">Quando o estado é destruído.</div></div>
   </div>
-
   <div class="card">
-    <div class="card-title">Ritmo & Música</div>
-    <div class="cb-row"><div class="cb-name">onBeatHit()</div><div class="cb-desc">Cada beat (usa <code>curBeat</code>). 4 beats por seção.</div></div>
-    <div class="cb-row"><div class="cb-name">onStepHit()</div><div class="cb-desc">Cada step (usa <code>curStep</code>). 4 steps por beat = 16 por seção.</div></div>
-    <div class="cb-row"><div class="cb-name">onSectionHit()</div><div class="cb-desc">Cada seção (usa <code>curSection</code>).</div></div>
-    <div class="cb-row"><div class="cb-name">onCountdownStarted()</div><div class="cb-desc">Countdown iniciado. Strums já têm posição aqui.</div></div>
-    <div class="cb-row"><div class="cb-name">onCountdownTick(counter)</div><div class="cb-desc"><code>counter</code>: 0=Three, 1=Two, 2=One, 3=Go!, 4=Start.</div></div>
-    <div class="cb-row"><div class="cb-name">onSongStart()</div><div class="cb-desc">Música começa de fato a tocar.</div></div>
-    <div class="cb-row"><div class="cb-name">onEndSong()</div><div class="cb-desc">Música terminou. Retorne <code>Function_Stop</code> para fazer cutscene.</div></div>
+    <div class="card-title" data-i18n="cb_beat">Ritmo & Música</div>
+    <div class="cb-row"><div class="cb-name">onBeatHit()</div><div class="cb-desc" data-i18n="cb_onBeatHit">Cada beat (usa curBeat). 4 beats por seção.</div></div>
+    <div class="cb-row"><div class="cb-name">onStepHit()</div><div class="cb-desc" data-i18n="cb_onStepHit">Cada step (usa curStep). 16 por seção.</div></div>
+    <div class="cb-row"><div class="cb-name">onSectionHit()</div><div class="cb-desc" data-i18n="cb_onSectionHit">Cada seção.</div></div>
+    <div class="cb-row"><div class="cb-name">onCountdownStarted()</div><div class="cb-desc" data-i18n="cb_onCountdown">Countdown iniciado. Strums têm posição aqui.</div></div>
+    <div class="cb-row"><div class="cb-name">onCountdownTick(counter)</div><div class="cb-desc" data-i18n="cb_onCountdownTick">counter: 0=Three, 1=Two, 2=One, 3=Go!, 4=Start.</div></div>
+    <div class="cb-row"><div class="cb-name">onSongStart()</div><div class="cb-desc" data-i18n="cb_onSongStart">Música começa a tocar.</div></div>
+    <div class="cb-row"><div class="cb-name">onEndSong()</div><div class="cb-desc" data-i18n="cb_onEndSong">Música terminou. Retorne Function_Stop para cutscene.</div></div>
   </div>
-
   <div class="card">
-    <div class="card-title">Notas</div>
-    <div class="cb-row"><div class="cb-name">goodNoteHit(id, direction, noteType, isSustainNote)</div><div class="cb-desc">Jogador acertou uma nota.</div></div>
-    <div class="cb-row"><div class="cb-name">opponentNoteHit(id, direction, noteType, isSustainNote)</div><div class="cb-desc">Oponente acertou uma nota.</div></div>
-    <div class="cb-row"><div class="cb-name">noteMiss(id, direction, noteType, isSustainNote)</div><div class="cb-desc">Jogador errou uma nota.</div></div>
-    <div class="cb-row"><div class="cb-name">noteMissPress(direction)</div><div class="cb-desc">Jogador pressionou tecla sem nota (ghost tap desativado).</div></div>
-    <div class="cb-row"><div class="cb-name">onSpawnNote(id, direction, noteType, isSustainNote)</div><div class="cb-desc">Uma nota aparece na tela.</div></div>
+    <div class="card-title" data-i18n="cb_notes">Notas</div>
+    <div class="cb-row"><div class="cb-name">goodNoteHit(id,dir,type,sustain)</div><div class="cb-desc" data-i18n="cb_goodNoteHit">Jogador acertou uma nota.</div></div>
+    <div class="cb-row"><div class="cb-name">opponentNoteHit(id,dir,type,sustain)</div><div class="cb-desc" data-i18n="cb_opponentNoteHit">Oponente acertou uma nota.</div></div>
+    <div class="cb-row"><div class="cb-name">noteMiss(id,dir,type,sustain)</div><div class="cb-desc" data-i18n="cb_noteMiss">Jogador errou uma nota.</div></div>
+    <div class="cb-row"><div class="cb-name">onSpawnNote(id,dir,type,sustain)</div><div class="cb-desc" data-i18n="cb_onSpawnNote">Uma nota aparece na tela.</div></div>
   </div>
-
   <div class="card">
-    <div class="card-title">Inputs do Jogador</div>
-    <div class="cb-row"><div class="cb-name">onKeyPress(key)</div><div class="cb-desc"><code>key</code>: 0=esq, 1=baixo, 2=cima, 3=dir.</div></div>
-    <div class="cb-row"><div class="cb-name">onKeyRelease(key)</div><div class="cb-desc">Tecla soltada.</div></div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">Eventos & Estado</div>
-    <div class="cb-row"><div class="cb-name">onEvent(name, val1, val2, strumTime)</div><div class="cb-desc">Um evento do chart foi ativado.</div></div>
-    <div class="cb-row"><div class="cb-name">onGameOver()</div><div class="cb-desc">Jogador morreu. Retorne <code>Function_Stop</code> para cancelar.</div></div>
-    <div class="cb-row"><div class="cb-name">onPause()</div><div class="cb-desc">Jogo pausado.</div></div>
-    <div class="cb-row"><div class="cb-name">onResume()</div><div class="cb-desc">Jogo resumido.</div></div>
-    <div class="cb-row"><div class="cb-name">onRecalculateRating()</div><div class="cb-desc">Rating sendo recalculado. Retorne <code>Function_Stop</code> para customizar.</div></div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">Function Returns — controle de fluxo</div>
-    <div class="compare">
-      <div>
-        <pre><span class="cmt">-- Lua</span>
-<span class="kw">function</span> <span class="fn">onEndSong</span><span class="punc">()</span>
-  startVideo<span class="punc">(</span><span class="str">'cutscene_end'</span><span class="punc">)</span>
-  <span class="kw">return</span> Function_Stop
-  <span class="cmt">-- cancela o fim de música</span>
-<span class="kw">end</span>
-<span class="lang-tag">lua</span></pre>
-      </div>
-      <div>
-        <pre><span class="cmt">// HScript</span>
-<span class="kw">function</span> <span class="fn">onEndSong</span><span class="punc">() {</span>
-  startVideo<span class="punc">(</span><span class="str">'cutscene_end'</span><span class="punc">);</span>
-  <span class="kw">return</span> Function_Stop<span class="punc">;</span>
-<span class="punc">}</span>
-<span class="lang-tag">hscript</span></pre>
-      </div>
-    </div>
+    <div class="card-title" data-i18n="cb_returns">Function Returns</div>
     <table>
-      <tr><th>Valor</th><th>Efeito</th></tr>
-      <tr><td><code>Function_Stop</code></td><td class="desc-col">Cancela o comportamento padrão (ex: impede fim de música)</td></tr>
-      <tr><td><code>Function_Continue</code></td><td class="desc-col">Continua normalmente (padrão)</td></tr>
-      <tr><td><code>Function_StopLua</code></td><td class="desc-col">Impede que o callback rode nos próximos scripts Lua</td></tr>
-      <tr><td><code>Function_StopHScript</code></td><td class="desc-col">Impede que rode nos próximos HScripts</td></tr>
-      <tr><td><code>Function_StopAll</code></td><td class="desc-col">Impede em todos os scripts seguintes</td></tr>
+      <tr><th data-i18n="th_value">Valor</th><th data-i18n="th_effect">Efeito</th></tr>
+      <tr><td><code>Function_Stop</code></td><td class="desc-col" data-i18n="ret_stop">Cancela o comportamento padrão</td></tr>
+      <tr><td><code>Function_Continue</code></td><td class="desc-col" data-i18n="ret_continue">Continua normalmente</td></tr>
+      <tr><td><code>Function_StopLua</code></td><td class="desc-col" data-i18n="ret_stopLua">Impede chamada nos próximos scripts Lua</td></tr>
+      <tr><td><code>Function_StopHScript</code></td><td class="desc-col" data-i18n="ret_stopHScript">Impede chamada nos próximos HScripts</td></tr>
+      <tr><td><code>Function_StopAll</code></td><td class="desc-col" data-i18n="ret_stopAll">Impede em todos os scripts</td></tr>
     </table>
   </div>
 </div>
@@ -508,558 +232,882 @@
 <!-- ===== VARIÁVEIS ===== -->
 <div class="section" id="variaveis">
   <div class="section-header">
-    <h2>Variáveis Globais</h2>
-    <p>Leitura direta — alterar não afeta o jogo (use setProperty para isso)</p>
+    <h2 data-i18n="vars_title">Variáveis Globais</h2>
+    <p data-i18n="vars_sub">Leitura direta — use setProperty para alterar</p>
   </div>
-
   <div class="card">
-    <div class="card-title">Música & Beat</div>
+    <div class="card-title" data-i18n="vars_beat">Música & Beat</div>
     <table>
-      <tr><th>Variável</th><th>Tipo</th><th>Descrição</th></tr>
-      <tr><td class="var-name">songName</td><td><code>String</code></td><td class="desc-col">Nome da música (visível na tela de pause)</td></tr>
-      <tr><td class="var-name">bpm</td><td><code>Float</code></td><td class="desc-col">BPM inicial da música</td></tr>
-      <tr><td class="var-name">curBpm</td><td><code>Float</code></td><td class="desc-col">BPM na seção atual</td></tr>
-      <tr><td class="var-name">songLength</td><td><code>Float</code></td><td class="desc-col">Duração total em ms</td></tr>
-      <tr><td class="var-name">curBeat</td><td><code>Int</code></td><td class="desc-col">Beat atual</td></tr>
-      <tr><td class="var-name">curStep</td><td><code>Int</code></td><td class="desc-col">Step atual</td></tr>
-      <tr><td class="var-name">curSection</td><td><code>Int</code></td><td class="desc-col">Seção atual</td></tr>
-      <tr><td class="var-name">curDecBeat</td><td><code>Float</code></td><td class="desc-col">Beat com decimal (posição exata)</td></tr>
-      <tr><td class="var-name">crochet</td><td><code>Float</code></td><td class="desc-col">Duração de 1 beat em ms</td></tr>
-      <tr><td class="var-name">stepCrochet</td><td><code>Float</code></td><td class="desc-col">Duração de 1 step em ms</td></tr>
+      <tr><th data-i18n="th_var">Variável</th><th data-i18n="th_type">Tipo</th><th data-i18n="th_desc">Descrição</th></tr>
+      <tr><td class="var-name">songName</td><td><code>String</code></td><td class="desc-col" data-i18n="var_songName">Nome da música</td></tr>
+      <tr><td class="var-name">bpm</td><td><code>Float</code></td><td class="desc-col" data-i18n="var_bpm">BPM inicial</td></tr>
+      <tr><td class="var-name">curBpm</td><td><code>Float</code></td><td class="desc-col" data-i18n="var_curBpm">BPM na seção atual</td></tr>
+      <tr><td class="var-name">curBeat</td><td><code>Int</code></td><td class="desc-col" data-i18n="var_curBeat">Beat atual</td></tr>
+      <tr><td class="var-name">curStep</td><td><code>Int</code></td><td class="desc-col" data-i18n="var_curStep">Step atual</td></tr>
+      <tr><td class="var-name">curSection</td><td><code>Int</code></td><td class="desc-col" data-i18n="var_curSection">Seção atual</td></tr>
+      <tr><td class="var-name">songLength</td><td><code>Float</code></td><td class="desc-col" data-i18n="var_songLength">Duração em ms</td></tr>
+      <tr><td class="var-name">crochet</td><td><code>Float</code></td><td class="desc-col" data-i18n="var_crochet">Duração de 1 beat em ms</td></tr>
     </table>
   </div>
-
   <div class="card">
-    <div class="card-title">Score & Gameplay</div>
+    <div class="card-title" data-i18n="vars_score">Score & Gameplay</div>
     <table>
-      <tr><th>Variável</th><th>Descrição</th></tr>
-      <tr><td class="var-name">score</td><td class="desc-col">Pontuação atual</td></tr>
-      <tr><td class="var-name">misses</td><td class="desc-col">Notas erradas</td></tr>
-      <tr><td class="var-name">hits</td><td class="desc-col">Notas acertadas</td></tr>
-      <tr><td class="var-name">combo</td><td class="desc-col">Combo atual</td></tr>
-      <tr><td class="var-name">rating</td><td class="desc-col">0.0 a 1.0</td></tr>
-      <tr><td class="var-name">ratingName</td><td class="desc-col">"Sick!", "Good", "Bad", "Shit"</td></tr>
-      <tr><td class="var-name">ratingFC</td><td class="desc-col">"FC", "GFC", "SFC", "SDBC", "Clear"</td></tr>
-      <tr><td class="var-name">botPlay</td><td class="desc-col">true se bot está ativo</td></tr>
-      <tr><td class="var-name">practice</td><td class="desc-col">true se modo prática</td></tr>
+      <tr><th data-i18n="th_var">Variável</th><th data-i18n="th_desc">Descrição</th></tr>
+      <tr><td class="var-name">score</td><td class="desc-col" data-i18n="var_score">Pontuação atual</td></tr>
+      <tr><td class="var-name">misses</td><td class="desc-col" data-i18n="var_misses">Notas erradas</td></tr>
+      <tr><td class="var-name">hits</td><td class="desc-col" data-i18n="var_hits">Notas acertadas</td></tr>
+      <tr><td class="var-name">combo</td><td class="desc-col" data-i18n="var_combo">Combo atual</td></tr>
+      <tr><td class="var-name">rating</td><td class="desc-col" data-i18n="var_rating">0.0 a 1.0</td></tr>
+      <tr><td class="var-name">ratingName</td><td class="desc-col" data-i18n="var_ratingName">"Sick!", "Good", "Bad", "Shit"</td></tr>
+      <tr><td class="var-name">ratingFC</td><td class="desc-col" data-i18n="var_ratingFC">"FC", "GFC", "SFC", "SDBC", "Clear"</td></tr>
+      <tr><td class="var-name">botPlay</td><td class="desc-col" data-i18n="var_botPlay">true se bot ativo</td></tr>
     </table>
   </div>
-
   <div class="card">
-    <div class="card-title">Personagens & Stage</div>
+    <div class="card-title" data-i18n="vars_chars">Personagens & Stage</div>
     <table>
-      <tr><th>Variável</th><th>Descrição</th></tr>
-      <tr><td class="var-name">boyfriendName</td><td class="desc-col">JSON name do player</td></tr>
-      <tr><td class="var-name">dadName</td><td class="desc-col">JSON name do oponente</td></tr>
-      <tr><td class="var-name">gfName</td><td class="desc-col">JSON name da GF</td></tr>
-      <tr><td class="var-name">curStage</td><td class="desc-col">Stage da música</td></tr>
-      <tr><td class="var-name">isStoryMode</td><td class="desc-col">true se Story Mode</td></tr>
-      <tr><td class="var-name">scrollSpeed</td><td class="desc-col">Velocidade inicial das notas</td></tr>
-      <tr><td class="var-name">mustHitSection</td><td class="desc-col">Seção atual é do player?</td></tr>
+      <tr><th data-i18n="th_var">Variável</th><th data-i18n="th_desc">Descrição</th></tr>
+      <tr><td class="var-name">boyfriendName</td><td class="desc-col" data-i18n="var_bfName">JSON name do player</td></tr>
+      <tr><td class="var-name">dadName</td><td class="desc-col" data-i18n="var_dadName">JSON name do oponente</td></tr>
+      <tr><td class="var-name">gfName</td><td class="desc-col" data-i18n="var_gfName">JSON name da GF</td></tr>
+      <tr><td class="var-name">curStage</td><td class="desc-col" data-i18n="var_curStage">Stage da música</td></tr>
+      <tr><td class="var-name">mustHitSection</td><td class="desc-col" data-i18n="var_mustHit">Seção do player?</td></tr>
+      <tr><td class="var-name">scrollSpeed</td><td class="desc-col" data-i18n="var_scrollSpeed">Velocidade das notas</td></tr>
     </table>
-  </div>
-
-  <div class="card">
-    <div class="card-title">Strums — disponíveis após onCountdownStarted</div>
-    <table>
-      <tr><th>Variável</th><th>Valor padrão</th></tr>
-      <tr><td class="var-name">defaultPlayerStrumX0</td><td class="desc-col">732 (Left)</td></tr>
-      <tr><td class="var-name">defaultPlayerStrumX1</td><td class="desc-col">844 (Down)</td></tr>
-      <tr><td class="var-name">defaultPlayerStrumX2</td><td class="desc-col">956 (Up)</td></tr>
-      <tr><td class="var-name">defaultPlayerStrumX3</td><td class="desc-col">1068 (Right)</td></tr>
-      <tr><td class="var-name">defaultOpponentStrumX0</td><td class="desc-col">92 (Left)</td></tr>
-      <tr><td class="var-name">defaultOpponentStrumX1</td><td class="desc-col">204 (Down)</td></tr>
-      <tr><td class="var-name">defaultOpponentStrumX2</td><td class="desc-col">316 (Up)</td></tr>
-      <tr><td class="var-name">defaultOpponentStrumX3</td><td class="desc-col">428 (Right)</td></tr>
-    </table>
-    <div class="tip" style="margin-top:0.75rem"><strong>Y:</strong> 50 (upscroll) ou 570 (downscroll)</div>
   </div>
 </div>
 
 <!-- ===== PLAYSTATE ===== -->
 <div class="section" id="playstate">
-  <div class="section-header">
-    <h2>PlayState Functions</h2>
-    <p>Funções de controle do estado do jogo</p>
-  </div>
-
-  <div class="card">
-    <div class="card-title">Fluxo da Música</div>
-    <pre><span class="cmt">-- Iniciar countdown manualmente (após cutscene de entrada)</span>
-<span class="fn">startCountdown</span><span class="punc">()</span>
-
-<span class="cmt">-- Terminar música (cancelável com Function_Stop no callback)</span>
+  <div class="section-header"><h2>PlayState Functions</h2><p data-i18n="ps_sub">Funções de controle do estado do jogo</p></div>
+  <div class="card"><div class="card-title" data-i18n="ps_flow">Fluxo da Música</div>
+<pre><span class="fn">startCountdown</span><span class="punc">()</span>
 <span class="fn">endSong</span><span class="punc">()</span>
-
-<span class="cmt">-- Reiniciar música</span>
-<span class="fn">restartSong</span><span class="punc">()</span>           <span class="cmt">-- com transição</span>
-<span class="fn">restartSong</span><span class="punc">(</span><span class="kw">true</span><span class="punc">)</span>      <span class="cmt">-- pula transição</span>
-
-<span class="cmt">-- Sair para freeplay/story</span>
+<span class="fn">restartSong</span><span class="punc">()</span>
 <span class="fn">exitSong</span><span class="punc">()</span>
-
-<span class="cmt">-- Carregar outra música</span>
-<span class="fn">loadSong</span><span class="punc">(</span><span class="str">'Bopeebo'</span><span class="punc">,</span> <span class="num">1</span><span class="punc">)</span>  <span class="cmt">-- nome, dificuldade (0=easy,1=normal,2=hard)</span>
-
-<span class="cmt">-- Posição atual em ms</span>
-<span class="kw">local</span> pos <span class="punc">=</span> <span class="fn">getSongPosition</span><span class="punc">()</span>
-<span class="lang-tag">lua</span></pre>
+<span class="fn">loadSong</span><span class="punc">(</span><span class="str">'Bopeebo'</span><span class="punc">,</span> <span class="num">1</span><span class="punc">)</span>
+<span class="kw">local</span> pos <span class="punc">=</span> <span class="fn">getSongPosition</span><span class="punc">()</span><span class="lang-tag">lua</span></pre>
   </div>
-
-  <div class="card">
-    <div class="card-title">Cutscenes</div>
-    <pre><span class="cmt">-- Vídeo</span>
-<span class="fn">startVideo</span><span class="punc">(</span><span class="str">'intro_cutscene'</span><span class="punc">)</span>
-<span class="fn">startVideo</span><span class="punc">(</span><span class="str">'mid_cutscene'</span><span class="punc">,</span> <span class="kw">true</span><span class="punc">,</span> <span class="kw">true</span><span class="punc">)</span> <span class="cmt">-- canSkip, forMidSong</span>
-
-<span class="cmt">-- Diálogo</span>
+  <div class="card"><div class="card-title" data-i18n="ps_cutscenes">Cutscenes</div>
+<pre><span class="fn">startVideo</span><span class="punc">(</span><span class="str">'intro'</span><span class="punc">)</span>
+<span class="fn">startVideo</span><span class="punc">(</span><span class="str">'mid'</span><span class="punc">,</span> <span class="kw">true</span><span class="punc">,</span> <span class="kw">true</span><span class="punc">)</span>
 <span class="fn">startDialogue</span><span class="punc">(</span><span class="str">'dialogue'</span><span class="punc">)</span>
-<span class="fn">startDialogue</span><span class="punc">(</span><span class="str">'dialogue'</span><span class="punc">,</span> <span class="str">'breakfast'</span><span class="punc">)</span> <span class="cmt">-- com música de fundo</span>
-
-<span class="cmt">-- Exemplo: cutscene no final da música</span>
-<span class="kw">function</span> <span class="fn">onEndSong</span><span class="punc">()</span>
-  <span class="kw">if</span> <span class="kw">not</span> seenCutscene <span class="kw">then</span>
-    <span class="fn">startVideo</span><span class="punc">(</span><span class="str">'ending'</span><span class="punc">)</span>
-    <span class="kw">return</span> Function_Stop
-  <span class="kw">end</span>
-<span class="kw">end</span>
-<span class="lang-tag">lua</span></pre>
+<span class="fn">startDialogue</span><span class="punc">(</span><span class="str">'dialogue'</span><span class="punc">,</span> <span class="str">'breakfast'</span><span class="punc">)</span><span class="lang-tag">lua</span></pre>
   </div>
-
-  <div class="card">
-    <div class="card-title">Eventos & UI</div>
-    <pre><span class="cmt">-- Disparar evento manualmente</span>
-<span class="fn">triggerEvent</span><span class="punc">(</span><span class="str">'Hey!'</span><span class="punc">,</span> <span class="str">'BF'</span><span class="punc">,</span> <span class="str">'0.6'</span><span class="punc">)</span>
-<span class="fn">triggerEvent</span><span class="punc">(</span><span class="str">'Change Character'</span><span class="punc">,</span> <span class="str">'dad'</span><span class="punc">,</span> <span class="str">'pico'</span><span class="punc">)</span>
-
-<span class="cmt">-- Cores da health bar</span>
+  <div class="card"><div class="card-title" data-i18n="ps_events">Eventos & UI</div>
+<pre><span class="fn">triggerEvent</span><span class="punc">(</span><span class="str">'Hey!'</span><span class="punc">,</span> <span class="str">'BF'</span><span class="punc">,</span> <span class="str">'0.6'</span><span class="punc">)</span>
 <span class="fn">setHealthBarColors</span><span class="punc">(</span><span class="str">'FF0000'</span><span class="punc">,</span> <span class="str">'00FF00'</span><span class="punc">)</span>
-<span class="fn">setHealthBarColors</span><span class="punc">(</span><span class="str">'red'</span><span class="punc">,</span> <span class="str">'lime'</span><span class="punc">)</span>
-
-<span class="cmt">-- Cores da time bar</span>
-<span class="fn">setTimeBarColors</span><span class="punc">(</span><span class="str">'FFFFFF'</span><span class="punc">,</span> <span class="str">'000000'</span><span class="punc">)</span>
-<span class="lang-tag">lua</span></pre>
+<span class="fn">setTimeBarColors</span><span class="punc">(</span><span class="str">'FFFFFF'</span><span class="punc">,</span> <span class="str">'000000'</span><span class="punc">)</span><span class="lang-tag">lua</span></pre>
   </div>
 </div>
 
 <!-- ===== REFLECTION ===== -->
 <div class="section" id="reflection">
-  <div class="section-header">
-    <h2>Reflection Functions</h2>
-    <p>Leitura e escrita de propriedades de qualquer objeto do PlayState</p>
-  </div>
-
-  <div class="card">
-    <div class="card-title">getProperty / setProperty</div>
-    <pre><span class="cmt">-- Ler propriedade</span>
-<span class="kw">local</span> bfX <span class="punc">=</span> <span class="fn">getProperty</span><span class="punc">(</span><span class="str">'boyfriend.x'</span><span class="punc">)</span>
-<span class="kw">local</span> anim <span class="punc">=</span> <span class="fn">getProperty</span><span class="punc">(</span><span class="str">'boyfriend.animation.curAnim.name'</span><span class="punc">)</span>
-<span class="kw">local</span> singArr <span class="punc">=</span> <span class="fn">getProperty</span><span class="punc">(</span><span class="str">'singAnimations[0]'</span><span class="punc">)</span>
-
-<span class="cmt">-- Alterar propriedade</span>
+  <div class="section-header"><h2>Reflection Functions</h2><p data-i18n="ref_sub">Leitura e escrita de propriedades de qualquer objeto</p></div>
+  <div class="card"><div class="card-title">getProperty / setProperty</div>
+<pre><span class="kw">local</span> bfX <span class="punc">=</span> <span class="fn">getProperty</span><span class="punc">(</span><span class="str">'boyfriend.x'</span><span class="punc">)</span>
 <span class="fn">setProperty</span><span class="punc">(</span><span class="str">'boyfriend.x'</span><span class="punc">,</span> <span class="num">400</span><span class="punc">)</span>
-<span class="fn">setProperty</span><span class="punc">(</span><span class="str">'boyfriend.stunned'</span><span class="punc">,</span> <span class="kw">true</span><span class="punc">)</span>
 <span class="fn">setProperty</span><span class="punc">(</span><span class="str">'camGame.zoom'</span><span class="punc">,</span> <span class="num">1.2</span><span class="punc">)</span>
-<span class="fn">setProperty</span><span class="punc">(</span><span class="str">'scrollSpeed'</span><span class="punc">,</span> <span class="num">2.5</span><span class="punc">)</span>
-
-<span class="cmt">-- De uma classe estática</span>
 <span class="fn">getPropertyFromClass</span><span class="punc">(</span><span class="str">'backend.ClientPrefs'</span><span class="punc">,</span> <span class="str">'data.downScroll'</span><span class="punc">)</span>
-<span class="fn">setPropertyFromClass</span><span class="punc">(</span><span class="str">'states.PlayState'</span><span class="punc">,</span> <span class="str">'SONG.player1'</span><span class="punc">,</span> <span class="str">'pico-playable'</span><span class="punc">)</span>
-<span class="lang-tag">lua</span></pre>
+<span class="fn">setPropertyFromGroup</span><span class="punc">(</span><span class="str">'playerStrums'</span><span class="punc">,</span> <span class="num">2</span><span class="punc">,</span> <span class="str">'visible'</span><span class="punc">,</span> <span class="kw">false</span><span class="punc">)</span><span class="lang-tag">lua</span></pre>
   </div>
-
-  <div class="card">
-    <div class="card-title">getPropertyFromGroup / setPropertyFromGroup</div>
-    <pre><span class="cmt">-- Ler propriedade de membro de grupo</span>
-<span class="kw">local</span> animName <span class="punc">=</span> <span class="fn">getPropertyFromGroup</span><span class="punc">(</span><span class="str">'playerStrums'</span><span class="punc">,</span> <span class="num">1</span><span class="punc">,</span> <span class="str">'animation.curAnim.name'</span><span class="punc">)</span>
-
-<span class="cmt">-- Esconder nota Up do player</span>
-<span class="fn">setPropertyFromGroup</span><span class="punc">(</span><span class="str">'playerStrums'</span><span class="punc">,</span> <span class="num">2</span><span class="punc">,</span> <span class="str">'visible'</span><span class="punc">,</span> <span class="kw">false</span><span class="punc">)</span>
-
-<span class="cmt">-- Iterar todas as notas não spawnadas</span>
-<span class="kw">for</span> i <span class="punc">=</span> <span class="num">0</span><span class="punc">,</span> <span class="fn">getProperty</span><span class="punc">(</span><span class="str">'unspawnNotes.length'</span><span class="punc">)</span> <span class="punc">-</span> <span class="num">1</span> <span class="kw">do</span>
-  <span class="kw">local</span> noteType <span class="punc">=</span> <span class="fn">getPropertyFromGroup</span><span class="punc">(</span><span class="str">'unspawnNotes'</span><span class="punc">,</span> i<span class="punc">,</span> <span class="str">'noteType'</span><span class="punc">)</span>
-  <span class="fn">debugPrint</span><span class="punc">(</span>noteType<span class="punc">)</span>
-<span class="kw">end</span>
-<span class="lang-tag">lua</span></pre>
-  </div>
-
-  <div class="card">
-    <div class="card-title">callMethod — chamar funções do PlayState</div>
-    <pre><span class="cmt">-- Limpar todas as notas</span>
-<span class="fn">callMethod</span><span class="punc">(</span><span class="str">'KillNotes'</span><span class="punc">)</span>
-
-<span class="cmt">-- Checar animação</span>
-<span class="kw">local</span> isNull <span class="punc">=</span> <span class="fn">callMethod</span><span class="punc">(</span><span class="str">'boyfriend.isAnimationNull'</span><span class="punc">)</span>
-
-<span class="cmt">-- Mudar ícone do player</span>
+  <div class="card"><div class="card-title">callMethod</div>
+<pre><span class="fn">callMethod</span><span class="punc">(</span><span class="str">'KillNotes'</span><span class="punc">)</span>
 <span class="fn">callMethod</span><span class="punc">(</span><span class="str">'iconP1.changeIcon'</span><span class="punc">,</span> <span class="punc">{</span><span class="str">'bf-old'</span><span class="punc">})</span>
-
-<span class="cmt">-- Spawn de note splash</span>
-<span class="fn">callMethod</span><span class="punc">(</span><span class="str">'spawnNoteSplashOnNote'</span><span class="punc">,</span> <span class="punc">{</span><span class="fn">instanceArg</span><span class="punc">(</span><span class="str">'notes.members[0]'</span><span class="punc">)})</span>
-<span class="lang-tag">lua</span></pre>
-  </div>
-
-  <div class="card">
-    <div class="card-title">Posicionamento & Transform</div>
-    <pre><span class="cmt">-- Centralizar na tela</span>
-<span class="fn">screenCenter</span><span class="punc">(</span><span class="str">'meuSprite'</span><span class="punc">)</span>
-<span class="fn">screenCenter</span><span class="punc">(</span><span class="str">'meuSprite'</span><span class="punc">,</span> <span class="str">'x'</span><span class="punc">)</span>
-
-<span class="cmt">-- Escalar</span>
-<span class="fn">scaleObject</span><span class="punc">(</span><span class="str">'meuSprite'</span><span class="punc">,</span> <span class="num">1.5</span><span class="punc">,</span> <span class="num">1.5</span><span class="punc">)</span>
-<span class="fn">setGraphicSize</span><span class="punc">(</span><span class="str">'meuSprite'</span><span class="punc">,</span> <span class="num">300</span><span class="punc">)</span>  <span class="cmt">-- 300px de largura</span>
-<span class="fn">updateHitbox</span><span class="punc">(</span><span class="str">'meuSprite'</span><span class="punc">)</span>
-
-<span class="cmt">-- Parallax (scroll factor)</span>
-<span class="fn">setScrollFactor</span><span class="punc">(</span><span class="str">'meuSprite'</span><span class="punc">,</span> <span class="num">0</span><span class="punc">,</span> <span class="num">0</span><span class="punc">)</span>  <span class="cmt">-- imóvel</span>
-
-<span class="cmt">-- Pegar posição</span>
-<span class="kw">local</span> mx <span class="punc">=</span> <span class="fn">getMidpointX</span><span class="punc">(</span><span class="str">'boyfriend'</span><span class="punc">)</span>
-<span class="kw">local</span> my <span class="punc">=</span> <span class="fn">getMidpointY</span><span class="punc">(</span><span class="str">'boyfriend'</span><span class="punc">)</span>
-
-<span class="cmt">-- Ordem de layer</span>
-<span class="fn">setObjectOrder</span><span class="punc">(</span><span class="str">'boyfriendGroup'</span><span class="punc">,</span> <span class="fn">getObjectOrder</span><span class="punc">(</span><span class="str">'gfGroup'</span><span class="punc">))</span>
-<span class="lang-tag">lua</span></pre>
+<span class="fn">scaleObject</span><span class="punc">(</span><span class="str">'mySprite'</span><span class="punc">,</span> <span class="num">1.5</span><span class="punc">,</span> <span class="num">1.5</span><span class="punc">)</span>
+<span class="fn">setScrollFactor</span><span class="punc">(</span><span class="str">'mySprite'</span><span class="punc">,</span> <span class="num">0</span><span class="punc">,</span> <span class="num">0</span><span class="punc">)</span>
+<span class="fn">setObjectOrder</span><span class="punc">(</span><span class="str">'boyfriendGroup'</span><span class="punc">,</span> <span class="fn">getObjectOrder</span><span class="punc">(</span><span class="str">'gfGroup'</span><span class="punc">))</span><span class="lang-tag">lua</span></pre>
   </div>
 </div>
 
 <!-- ===== SPRITES ===== -->
 <div class="section" id="sprites">
-  <div class="section-header">
-    <h2>Sprites & Texto</h2>
-    <p>Criar e manipular objetos visuais em runtime</p>
+  <div class="section-header"><h2 data-i18n="spr_title">Sprites & Texto</h2><p data-i18n="spr_sub">Criar e manipular objetos visuais em runtime</p></div>
+  <div class="card"><div class="card-title">makeLuaSprite / addLuaSprite</div>
+<pre><span class="fn">makeLuaSprite</span><span class="punc">(</span><span class="str">'myBg'</span><span class="punc">,</span> <span class="str">'stages/school/bg'</span><span class="punc">,</span> <span class="num">0</span><span class="punc">,</span> <span class="num">0</span><span class="punc">)</span>
+<span class="fn">addLuaSprite</span><span class="punc">(</span><span class="str">'myBg'</span><span class="punc">,</span> <span class="kw">false</span><span class="punc">)</span>
+<span class="fn">makeAnimatedLuaSprite</span><span class="punc">(</span><span class="str">'fx'</span><span class="punc">,</span> <span class="str">'effects/explosion'</span><span class="punc">,</span> <span class="num">300</span><span class="punc">,</span> <span class="num">200</span><span class="punc">)</span>
+<span class="fn">addAnimationByPrefix</span><span class="punc">(</span><span class="str">'fx'</span><span class="punc">,</span> <span class="str">'explode'</span><span class="punc">,</span> <span class="str">'Explosion'</span><span class="punc">,</span> <span class="num">24</span><span class="punc">,</span> <span class="kw">false</span><span class="punc">)</span>
+<span class="fn">playAnim</span><span class="punc">(</span><span class="str">'fx'</span><span class="punc">,</span> <span class="str">'explode'</span><span class="punc">)</span>
+<span class="fn">setObjectCamera</span><span class="punc">(</span><span class="str">'myBg'</span><span class="punc">,</span> <span class="str">'game'</span><span class="punc">)</span>
+<span class="fn">removeLuaSprite</span><span class="punc">(</span><span class="str">'myBg'</span><span class="punc">)</span><span class="lang-tag">lua</span></pre>
   </div>
-
-  <div class="card">
-    <div class="card-title">makeLuaSprite / addLuaSprite <span class="badge badge-both">LUA + HX</span></div>
-    <pre><span class="cmt">-- Criar sprite simples (tag, imagem, x, y)</span>
-<span class="fn">makeLuaSprite</span><span class="punc">(</span><span class="str">'myBg'</span><span class="punc">,</span> <span class="str">'stages/school/bg'</span><span class="punc">,</span> <span class="num">0</span><span class="punc">,</span> <span class="num">0</span><span class="punc">)</span>
-<span class="fn">addLuaSprite</span><span class="punc">(</span><span class="str">'myBg'</span><span class="punc">,</span> <span class="kw">false</span><span class="punc">)</span>  <span class="cmt">-- false = atrás dos personagens</span>
-
-<span class="cmt">-- Sprite animado (spritesheet)</span>
-<span class="fn">makeAnimatedLuaSprite</span><span class="punc">(</span><span class="str">'explosion'</span><span class="punc">,</span> <span class="str">'effects/explosion'</span><span class="punc">,</span> <span class="num">300</span><span class="punc">,</span> <span class="num">200</span><span class="punc">)</span>
-<span class="fn">addAnimationByPrefix</span><span class="punc">(</span><span class="str">'explosion'</span><span class="punc">,</span> <span class="str">'explode'</span><span class="punc">,</span> <span class="str">'Explosion'</span><span class="punc">,</span> <span class="num">24</span><span class="punc">,</span> <span class="kw">false</span><span class="punc">)</span>
-<span class="fn">addLuaSprite</span><span class="punc">(</span><span class="str">'explosion'</span><span class="punc">,</span> <span class="kw">true</span><span class="punc">)</span>  <span class="cmt">-- true = na frente de tudo</span>
-<span class="fn">playAnim</span><span class="punc">(</span><span class="str">'explosion'</span><span class="punc">,</span> <span class="str">'explode'</span><span class="punc">)</span>
-
-<span class="cmt">-- Camera do sprite</span>
-<span class="fn">setObjectCamera</span><span class="punc">(</span><span class="str">'myBg'</span><span class="punc">,</span> <span class="str">'game'</span><span class="punc">)</span>   <span class="cmt">-- 'game' | 'hud' | 'other'</span>
-
-<span class="cmt">-- Remover</span>
-<span class="fn">removeLuaSprite</span><span class="punc">(</span><span class="str">'myBg'</span><span class="punc">)</span>
-<span class="lang-tag">lua</span></pre>
-  </div>
-
-  <div class="card">
-    <div class="card-title">Animações</div>
-    <pre><span class="cmt">-- Adicionar animação por prefixo (Sparrow atlas)</span>
-<span class="fn">addAnimationByPrefix</span><span class="punc">(</span><span class="str">'tag'</span><span class="punc">,</span> <span class="str">'nomeDaAnim'</span><span class="punc">,</span> <span class="str">'prefixoNoAtlas'</span><span class="punc">,</span> fps<span class="punc">,</span> loop<span class="punc">)</span>
-
-<span class="cmt">-- Adicionar por indices</span>
-<span class="fn">addAnimationByIndices</span><span class="punc">(</span><span class="str">'tag'</span><span class="punc">,</span> <span class="str">'nomeDaAnim'</span><span class="punc">,</span> <span class="str">'prefixo'</span><span class="punc">,</span> <span class="str">'0 1 2 3'</span><span class="punc">,</span> fps<span class="punc">)</span>
-
-<span class="cmt">-- Tocar animação</span>
-<span class="fn">playAnim</span><span class="punc">(</span><span class="str">'tag'</span><span class="punc">,</span> <span class="str">'nomeDaAnim'</span><span class="punc">)</span>
-<span class="fn">playAnim</span><span class="punc">(</span><span class="str">'tag'</span><span class="punc">,</span> <span class="str">'nomeDaAnim'</span><span class="punc">,</span> <span class="kw">true</span><span class="punc">)</span>  <span class="cmt">-- force restart</span>
-
-<span class="cmt">-- Checar animação atual</span>
-<span class="kw">local</span> curAnim <span class="punc">=</span> <span class="fn">getProperty</span><span class="punc">(</span><span class="str">'boyfriend.animation.curAnim.name'</span><span class="punc">)</span>
-<span class="lang-tag">lua</span></pre>
-  </div>
-
-  <div class="card">
-    <div class="card-title">Texto (makeLuaText)</div>
-    <pre><span class="cmt">-- Criar texto (tag, conteúdo, largura, x, y)</span>
-<span class="fn">makeLuaText</span><span class="punc">(</span><span class="str">'myText'</span><span class="punc">,</span> <span class="str">'Hello World!'</span><span class="punc">,</span> <span class="num">0</span><span class="punc">,</span> <span class="num">100</span><span class="punc">,</span> <span class="num">100</span><span class="punc">)</span>
+  <div class="card"><div class="card-title">makeLuaText</div>
+<pre><span class="fn">makeLuaText</span><span class="punc">(</span><span class="str">'myText'</span><span class="punc">,</span> <span class="str">'Hello!'</span><span class="punc">,</span> <span class="num">0</span><span class="punc">,</span> <span class="num">100</span><span class="punc">,</span> <span class="num">100</span><span class="punc">)</span>
 <span class="fn">setTextSize</span><span class="punc">(</span><span class="str">'myText'</span><span class="punc">,</span> <span class="num">32</span><span class="punc">)</span>
 <span class="fn">setTextColor</span><span class="punc">(</span><span class="str">'myText'</span><span class="punc">,</span> <span class="str">'FFFFFF'</span><span class="punc">)</span>
 <span class="fn">setTextBorder</span><span class="punc">(</span><span class="str">'myText'</span><span class="punc">,</span> <span class="num">2</span><span class="punc">,</span> <span class="str">'000000'</span><span class="punc">)</span>
-<span class="fn">setTextAlignment</span><span class="punc">(</span><span class="str">'myText'</span><span class="punc">,</span> <span class="str">'center'</span><span class="punc">)</span>
 <span class="fn">addLuaText</span><span class="punc">(</span><span class="str">'myText'</span><span class="punc">)</span>
-
-<span class="cmt">-- Atualizar conteúdo</span>
-<span class="fn">setTextString</span><span class="punc">(</span><span class="str">'myText'</span><span class="punc">,</span> <span class="str">'Score: '</span> <span class="punc">..</span> score<span class="punc">)</span>
-
-<span class="cmt">-- Remover</span>
-<span class="fn">removeLuaText</span><span class="punc">(</span><span class="str">'myText'</span><span class="punc">)</span>
-<span class="lang-tag">lua</span></pre>
+<span class="fn">setTextString</span><span class="punc">(</span><span class="str">'myText'</span><span class="punc">,</span> <span class="str">'Score: '</span> <span class="punc">..</span> score<span class="punc">)</span><span class="lang-tag">lua</span></pre>
   </div>
 </div>
 
 <!-- ===== TWEENS ===== -->
 <div class="section" id="tweens">
-  <div class="section-header">
-    <h2>Tweens & Timers</h2>
-    <p>Animações de propriedades e delays com easing</p>
-  </div>
-
-  <div class="card">
-    <div class="card-title">doTween</div>
-    <pre><span class="cmt">-- doTween(tag, objeto, propriedades, duração, easing)</span>
-<span class="fn">doTween</span><span class="punc">(</span><span class="str">'bfMove'</span><span class="punc">,</span> <span class="str">'boyfriend'</span><span class="punc">,</span> <span class="punc">{</span>x<span class="punc">=</span><span class="num">600</span><span class="punc">,</span> y<span class="punc">=</span><span class="num">300</span><span class="punc">},</span> <span class="num">1</span><span class="punc">,</span> <span class="str">'linear'</span><span class="punc">)</span>
-<span class="fn">doTween</span><span class="punc">(</span><span class="str">'zoomIn'</span><span class="punc">,</span> <span class="str">'camGame'</span><span class="punc">,</span> <span class="punc">{</span>zoom<span class="punc">=</span><span class="num">1.5</span><span class="punc">},</span> <span class="num">0.5</span><span class="punc">,</span> <span class="str">'sineOut'</span><span class="punc">)</span>
-<span class="fn">doTween</span><span class="punc">(</span><span class="str">'fadeOut'</span><span class="punc">,</span> <span class="str">'mySprite'</span><span class="punc">,</span> <span class="punc">{</span>alpha<span class="punc">=</span><span class="num">0</span><span class="punc">},</span> <span class="num">0.8</span><span class="punc">,</span> <span class="str">'cubeInOut'</span><span class="punc">)</span>
-
-<span class="cmt">-- Cancelar tween</span>
+  <div class="section-header"><h2>Tweens & Timers</h2><p data-i18n="tw_sub">Animações de propriedades e delays</p></div>
+  <div class="card"><div class="card-title">doTween</div>
+<pre><span class="fn">doTween</span><span class="punc">(</span><span class="str">'bfMove'</span><span class="punc">,</span> <span class="str">'boyfriend'</span><span class="punc">,</span> <span class="punc">{</span>x<span class="punc">=</span><span class="num">600</span><span class="punc">},</span> <span class="num">1</span><span class="punc">,</span> <span class="str">'linear'</span><span class="punc">)</span>
+<span class="fn">doTween</span><span class="punc">(</span><span class="str">'zoom'</span><span class="punc">,</span> <span class="str">'camGame'</span><span class="punc">,</span> <span class="punc">{</span>zoom<span class="punc">=</span><span class="num">1.5</span><span class="punc">},</span> <span class="num">0.5</span><span class="punc">,</span> <span class="str">'sineOut'</span><span class="punc">)</span>
+<span class="fn">doTween</span><span class="punc">(</span><span class="str">'fade'</span><span class="punc">,</span> <span class="str">'mySprite'</span><span class="punc">,</span> <span class="punc">{</span>alpha<span class="punc">=</span><span class="num">0</span><span class="punc">},</span> <span class="num">0.8</span><span class="punc">,</span> <span class="str">'cubeInOut'</span><span class="punc">)</span>
 <span class="fn">cancelTween</span><span class="punc">(</span><span class="str">'bfMove'</span><span class="punc">)</span>
-
-<span class="cmt">-- Callback ao terminar — onTweenCompleted(tag)</span>
 <span class="kw">function</span> <span class="fn">onTweenCompleted</span><span class="punc">(</span>tag<span class="punc">)</span>
-  <span class="kw">if</span> tag <span class="punc">==</span> <span class="str">'fadeOut'</span> <span class="kw">then</span>
-    <span class="fn">removeLuaSprite</span><span class="punc">(</span><span class="str">'mySprite'</span><span class="punc">)</span>
-  <span class="kw">end</span>
-<span class="kw">end</span>
-<span class="lang-tag">lua</span></pre>
-
-    <div class="tip"><strong>Easings comuns:</strong> <span class="chip">linear</span> <span class="chip">sineIn</span> <span class="chip">sineOut</span> <span class="chip">sineInOut</span> <span class="chip">cubeIn</span> <span class="chip">cubeOut</span> <span class="chip">cubeInOut</span> <span class="chip">bounceOut</span> <span class="chip">elasticOut</span> <span class="chip">backOut</span></div>
+  <span class="kw">if</span> tag <span class="punc">==</span> <span class="str">'fade'</span> <span class="kw">then</span> <span class="fn">removeLuaSprite</span><span class="punc">(</span><span class="str">'mySprite'</span><span class="punc">)</span> <span class="kw">end</span>
+<span class="kw">end</span><span class="lang-tag">lua</span></pre>
+    <div class="tip"><strong data-i18n="tw_ease_label">Easings:</strong> <span class="chip">linear</span><span class="chip">sineIn</span><span class="chip">sineOut</span><span class="chip">sineInOut</span><span class="chip">cubeIn</span><span class="chip">cubeOut</span><span class="chip">bounceOut</span><span class="chip">elasticOut</span><span class="chip">backOut</span></div>
   </div>
-
-  <div class="card">
-    <div class="card-title">Timers</div>
-    <pre><span class="cmt">-- runTimer(tag, tempo, loops)</span>
-<span class="fn">runTimer</span><span class="punc">(</span><span class="str">'delay'</span><span class="punc">,</span> <span class="num">2</span><span class="punc">)</span>           <span class="cmt">-- 2 segundos, 1 vez</span>
-<span class="fn">runTimer</span><span class="punc">(</span><span class="str">'pulse'</span><span class="punc">,</span> <span class="num">0.5</span><span class="punc">,</span> <span class="num">0</span><span class="punc">)</span>     <span class="cmt">-- loop infinito</span>
-<span class="fn">runTimer</span><span class="punc">(</span><span class="str">'triple'</span><span class="punc">,</span> <span class="num">1</span><span class="punc">,</span> <span class="num">3</span><span class="punc">)</span>     <span class="cmt">-- repete 3 vezes</span>
-
-<span class="cmt">-- Callback — onTimerCompleted(tag, loops, loopsLeft)</span>
+  <div class="card"><div class="card-title">runTimer</div>
+<pre><span class="fn">runTimer</span><span class="punc">(</span><span class="str">'delay'</span><span class="punc">,</span> <span class="num">2</span><span class="punc">)</span>
+<span class="fn">runTimer</span><span class="punc">(</span><span class="str">'pulse'</span><span class="punc">,</span> <span class="num">0.5</span><span class="punc">,</span> <span class="num">0</span><span class="punc">)</span>
 <span class="kw">function</span> <span class="fn">onTimerCompleted</span><span class="punc">(</span>tag<span class="punc">,</span> loops<span class="punc">,</span> loopsLeft<span class="punc">)</span>
-  <span class="kw">if</span> tag <span class="punc">==</span> <span class="str">'delay'</span> <span class="kw">then</span>
-    <span class="fn">startCountdown</span><span class="punc">()</span>
-  <span class="kw">end</span>
-<span class="kw">end</span>
-
-<span class="cmt">-- Cancelar timer</span>
-<span class="fn">cancelTimer</span><span class="punc">(</span><span class="str">'pulse'</span><span class="punc">)</span>
-<span class="lang-tag">lua</span></pre>
+  <span class="kw">if</span> tag <span class="punc">==</span> <span class="str">'delay'</span> <span class="kw">then</span> <span class="fn">startCountdown</span><span class="punc">()</span> <span class="kw">end</span>
+<span class="kw">end</span><span class="lang-tag">lua</span></pre>
   </div>
 </div>
 
 <!-- ===== CAMERA ===== -->
 <div class="section" id="camera">
-  <div class="section-header">
-    <h2>Camera</h2>
-    <p>Controle de zoom, posição e flash das câmeras</p>
-  </div>
-
+  <div class="section-header"><h2>Camera</h2><p data-i18n="cam_sub">Zoom, flash, shake, fade</p></div>
   <div class="card">
-    <div class="card-title">Zoom & Flash</div>
-    <pre><span class="cmt">-- Zoom da camera (camGame = world, camHUD = UI)</span>
-<span class="fn">setProperty</span><span class="punc">(</span><span class="str">'camGame.zoom'</span><span class="punc">,</span> <span class="num">1.2</span><span class="punc">)</span>
-<span class="fn">doTween</span><span class="punc">(</span><span class="str">'camZoom'</span><span class="punc">,</span> <span class="str">'camGame'</span><span class="punc">,</span> <span class="punc">{</span>zoom<span class="punc">=</span><span class="num">1.0</span><span class="punc">},</span> <span class="num">1</span><span class="punc">,</span> <span class="str">'sineOut'</span><span class="punc">)</span>
-
-<span class="cmt">-- Flash da câmera</span>
+<pre><span class="fn">setProperty</span><span class="punc">(</span><span class="str">'camGame.zoom'</span><span class="punc">,</span> <span class="num">1.2</span><span class="punc">)</span>
+<span class="fn">doTween</span><span class="punc">(</span><span class="str">'z'</span><span class="punc">,</span> <span class="str">'camGame'</span><span class="punc">,</span> <span class="punc">{</span>zoom<span class="punc">=</span><span class="num">1.0</span><span class="punc">},</span> <span class="num">1</span><span class="punc">,</span> <span class="str">'sineOut'</span><span class="punc">)</span>
 <span class="fn">cameraFlash</span><span class="punc">(</span><span class="str">'game'</span><span class="punc">,</span> <span class="str">'FFFFFF'</span><span class="punc">,</span> <span class="num">0.5</span><span class="punc">,</span> <span class="kw">false</span><span class="punc">)</span>
-
-<span class="cmt">-- Shake</span>
-<span class="fn">cameraShake</span><span class="punc">(</span><span class="str">'game'</span><span class="punc">,</span> <span class="num">0.05</span><span class="punc">,</span> <span class="num">0.5</span><span class="punc">)</span>  <span class="cmt">-- intensidade, duração</span>
-
-<span class="cmt">-- Fade</span>
-<span class="fn">cameraFade</span><span class="punc">(</span><span class="str">'game'</span><span class="punc">,</span> <span class="str">'000000'</span><span class="punc">,</span> <span class="num">1</span><span class="punc">,</span> <span class="kw">false</span><span class="punc">)</span>  <span class="cmt">-- fade to black</span>
-
-<span class="cmt">-- Seguir objeto</span>
-<span class="fn">cameraFollow</span><span class="punc">(</span><span class="str">'boyfriend'</span><span class="punc">)</span>
-<span class="fn">cameraSetTarget</span><span class="punc">(</span><span class="str">'dad'</span><span class="punc">)</span>
-<span class="lang-tag">lua</span></pre>
+<span class="fn">cameraShake</span><span class="punc">(</span><span class="str">'game'</span><span class="punc">,</span> <span class="num">0.05</span><span class="punc">,</span> <span class="num">0.5</span><span class="punc">)</span>
+<span class="fn">cameraFade</span><span class="punc">(</span><span class="str">'game'</span><span class="punc">,</span> <span class="str">'000000'</span><span class="punc">,</span> <span class="num">1</span><span class="punc">,</span> <span class="kw">false</span><span class="punc">)</span>
+<span class="fn">cameraFollow</span><span class="punc">(</span><span class="str">'boyfriend'</span><span class="punc">)</span><span class="lang-tag">lua</span></pre>
   </div>
 </div>
 
 <!-- ===== HSCRIPT ===== -->
 <div class="section" id="hscript">
-  <div class="section-header">
-    <h2>HScript (.hx)</h2>
-    <p>Scripting em Haxe puro — acesso direto às classes do engine</p>
-  </div>
-
-  <div class="card">
-    <div class="card-title">Diferenças chave vs Lua <span class="badge badge-hx">HX</span></div>
+  <div class="section-header"><h2>HScript (.hx)</h2><p data-i18n="hx_sub">Scripting em Haxe puro — acesso direto às classes</p></div>
+  <div class="card"><div class="card-title" data-i18n="hx_diff">Diferenças vs Lua <span class="badge badge-hx">HX</span></div>
     <div class="compare">
-      <div class="compare-box">
-        <div class="compare-label lua">Lua</div>
-        <pre><span class="cmt">-- sem tipo, sem imports</span>
-<span class="kw">function</span> <span class="fn">onCreate</span><span class="punc">()</span>
-  <span class="fn">makeLuaSprite</span><span class="punc">(</span><span class="str">'s'</span><span class="punc">,</span><span class="str">'img'</span><span class="punc">,</span><span class="num">0</span><span class="punc">,</span><span class="num">0</span><span class="punc">)</span>
-  <span class="fn">addLuaSprite</span><span class="punc">(</span><span class="str">'s'</span><span class="punc">,</span> <span class="kw">true</span><span class="punc">)</span>
-<span class="kw">end</span>
-<span class="lang-tag">lua</span></pre>
+      <div><div class="compare-label lua">Lua</div>
+<pre><span class="fn">makeLuaSprite</span><span class="punc">(</span><span class="str">'s'</span><span class="punc">,</span><span class="str">'img'</span><span class="punc">,</span><span class="num">0</span><span class="punc">,</span><span class="num">0</span><span class="punc">)</span>
+<span class="fn">addLuaSprite</span><span class="punc">(</span><span class="str">'s'</span><span class="punc">,</span><span class="kw">true</span><span class="punc">)</span><span class="lang-tag">lua</span></pre>
       </div>
-      <div class="compare-box">
-        <div class="compare-label hx">HScript</div>
-        <pre><span class="cmt">// imports diretos!</span>
-<span class="kw">import</span> flixel.FlxSprite<span class="punc">;</span>
+      <div><div class="compare-label hx">HScript</div>
+<pre><span class="kw">import</span> flixel.FlxSprite<span class="punc">;</span>
 <span class="kw">import</span> states.PlayState<span class="punc">;</span>
-
-<span class="kw">function</span> <span class="fn">onCreate</span><span class="punc">() {</span>
-  <span class="kw">var</span> s<span class="punc">:</span><span class="type">FlxSprite</span> <span class="punc">=</span> <span class="kw">new</span> <span class="type">FlxSprite</span><span class="punc">(</span><span class="num">0</span><span class="punc">,</span> <span class="num">0</span><span class="punc">);</span>
-  s<span class="punc">.</span>loadGraphic<span class="punc">(</span><span class="type">Paths</span><span class="punc">.</span>image<span class="punc">(</span><span class="str">'img'</span><span class="punc">));</span>
-  <span class="type">PlayState</span><span class="punc">.</span>instance<span class="punc">.</span>add<span class="punc">(</span>s<span class="punc">);</span>
-<span class="punc">}</span>
-<span class="lang-tag">hscript</span></pre>
+<span class="kw">var</span> s <span class="punc">=</span> <span class="kw">new</span> <span class="type">FlxSprite</span><span class="punc">(</span><span class="num">0</span><span class="punc">,</span><span class="num">0</span><span class="punc">);</span>
+s<span class="punc">.</span>loadGraphic<span class="punc">(</span><span class="type">Paths</span><span class="punc">.</span>image<span class="punc">(</span><span class="str">'img'</span><span class="punc">));</span>
+<span class="type">PlayState</span><span class="punc">.</span>instance<span class="punc">.</span>add<span class="punc">(</span>s<span class="punc">);</span><span class="lang-tag">hscript</span></pre>
       </div>
     </div>
   </div>
-
-  <div class="card">
-    <div class="card-title">Acesso ao PlayState via HScript</div>
-    <pre><span class="kw">import</span> states.PlayState<span class="punc">;</span>
+  <div class="card"><div class="card-title" data-i18n="hx_access">Acesso direto ao PlayState</div>
+<pre><span class="kw">import</span> states.PlayState<span class="punc">;</span>
 <span class="kw">import</span> backend.ClientPrefs<span class="punc">;</span>
 <span class="kw">import</span> flixel.FlxG<span class="punc">;</span>
-
 <span class="kw">var</span> game <span class="punc">=</span> <span class="type">PlayState</span><span class="punc">.</span>instance<span class="punc">;</span>
-
 <span class="kw">function</span> <span class="fn">onCreate</span><span class="punc">() {</span>
-  <span class="cmt">// Acesso direto a propriedades</span>
   game<span class="punc">.</span>scrollSpeed <span class="punc">=</span> <span class="num">2.0</span><span class="punc">;</span>
-
-  <span class="cmt">// ClientPrefs</span>
-  <span class="kw">var</span> isDown <span class="punc">=</span> <span class="type">ClientPrefs</span><span class="punc">.</span>data<span class="punc">.</span>downScroll<span class="punc">;</span>
-
-  <span class="cmt">// FlxG direto</span>
+  <span class="kw">var</span> ds <span class="punc">=</span> <span class="type">ClientPrefs</span><span class="punc">.</span>data<span class="punc">.</span>downScroll<span class="punc">;</span>
   <span class="type">FlxG</span><span class="punc">.</span>camera<span class="punc">.</span>zoom <span class="punc">=</span> <span class="num">1.2</span><span class="punc">;</span>
-<span class="punc">}</span>
-<span class="lang-tag">hscript</span></pre>
-  </div>
-
-  <div class="card">
-    <div class="card-title">callScript / stopScript — gerenciar HScripts via Lua</div>
-    <pre><span class="cmt">-- Rodar um HScript de dentro de Lua</span>
-<span class="fn">callScript</span><span class="punc">(</span><span class="str">'scripts/myHScript.hx'</span><span class="punc">)</span>
-
-<span class="cmt">-- Parar um HScript</span>
-<span class="fn">stopHScript</span><span class="punc">(</span><span class="str">'scripts/myHScript.hx'</span><span class="punc">)</span>
-
-<span class="cmt">-- Checar se está rodando</span>
-<span class="kw">local</span> running <span class="punc">=</span> <span class="fn">isRunning</span><span class="punc">(</span><span class="str">'scripts/myHScript.hx'</span><span class="punc">)</span>
-
-<span class="cmt">-- Compartilhar variável entre todos os scripts</span>
-<span class="fn">setVar</span><span class="punc">(</span><span class="str">'minhaVar'</span><span class="punc">,</span> <span class="num">42</span><span class="punc">)</span>
-<span class="fn">getVar</span><span class="punc">(</span><span class="str">'minhaVar'</span><span class="punc">)</span>
-<span class="lang-tag">lua</span></pre>
-  </div>
-
-  <div class="tip">
-    <strong>HScript no P-Slice:</strong> Usa SScript (HScript-Iris). Você tem acesso a praticamente todas as classes do engine — FlxSprite, FlxTween, FlxTimer, Paths, ClientPrefs, PlayState, etc. Muito mais poderoso que Lua para mecânicas complexas.
+<span class="punc">}</span><span class="lang-tag">hscript</span></pre>
   </div>
 </div>
 
 <!-- ===== EXEMPLOS ===== -->
 <div class="section" id="exemplos">
-  <div class="section-header">
-    <h2>Exemplos Completos</h2>
-    <p>Scripts prontos para usar ou adaptar</p>
-  </div>
-
-  <div class="card">
-    <div class="card-title">BF fica maior na vez dele <span class="badge badge-lua">LUA</span></div>
-    <pre><span class="kw">function</span> <span class="fn">onSectionHit</span><span class="punc">()</span>
+  <div class="section-header"><h2 data-i18n="ex_title">Exemplos Completos</h2><p data-i18n="ex_sub">Scripts prontos para usar</p></div>
+  <div class="card"><div class="card-title" data-i18n="ex_bfscale">BF fica maior na vez dele <span class="badge badge-lua">LUA</span></div>
+<pre><span class="kw">function</span> <span class="fn">onSectionHit</span><span class="punc">()</span>
   <span class="kw">if</span> mustHitSection <span class="kw">then</span>
-    <span class="fn">doTween</span><span class="punc">(</span><span class="str">'bfScale'</span><span class="punc">,</span> <span class="str">'boyfriendGroup'</span><span class="punc">,</span>
-      <span class="punc">{</span>x<span class="punc">=</span><span class="num">1.3</span><span class="punc">,</span> y<span class="punc">=</span><span class="num">1.3</span><span class="punc">},</span> <span class="num">0.3</span><span class="punc">,</span> <span class="str">'elasticOut'</span><span class="punc">)</span>
+    <span class="fn">doTween</span><span class="punc">(</span><span class="str">'s'</span><span class="punc">,</span><span class="str">'boyfriendGroup'</span><span class="punc">,{</span>x<span class="punc">=</span><span class="num">1.3</span><span class="punc">,</span>y<span class="punc">=</span><span class="num">1.3</span><span class="punc">},</span><span class="num">0.3</span><span class="punc">,</span><span class="str">'elasticOut'</span><span class="punc">)</span>
   <span class="kw">else</span>
-    <span class="fn">doTween</span><span class="punc">(</span><span class="str">'bfScale'</span><span class="punc">,</span> <span class="str">'boyfriendGroup'</span><span class="punc">,</span>
-      <span class="punc">{</span>x<span class="punc">=</span><span class="num">1</span><span class="punc">,</span> y<span class="punc">=</span><span class="num">1</span><span class="punc">},</span> <span class="num">0.3</span><span class="punc">,</span> <span class="str">'sineOut'</span><span class="punc">)</span>
+    <span class="fn">doTween</span><span class="punc">(</span><span class="str">'s'</span><span class="punc">,</span><span class="str">'boyfriendGroup'</span><span class="punc">,{</span>x<span class="punc">=</span><span class="num">1</span><span class="punc">,</span>y<span class="punc">=</span><span class="num">1</span><span class="punc">},</span><span class="num">0.3</span><span class="punc">,</span><span class="str">'sineOut'</span><span class="punc">)</span>
   <span class="kw">end</span>
-<span class="kw">end</span>
-<span class="lang-tag">lua</span></pre>
+<span class="kw">end</span><span class="lang-tag">lua</span></pre>
   </div>
-
-  <div class="card">
-    <div class="card-title">Score HUD customizado <span class="badge badge-lua">LUA</span></div>
-    <pre><span class="kw">function</span> <span class="fn">onCreate</span><span class="punc">()</span>
-  <span class="fn">makeLuaText</span><span class="punc">(</span><span class="str">'customScore'</span><span class="punc">,</span> <span class="str">''</span><span class="punc">,</span> <span class="num">0</span><span class="punc">,</span> <span class="num">20</span><span class="punc">,</span> <span class="num">20</span><span class="punc">)</span>
-  <span class="fn">setTextSize</span><span class="punc">(</span><span class="str">'customScore'</span><span class="punc">,</span> <span class="num">28</span><span class="punc">)</span>
-  <span class="fn">setTextColor</span><span class="punc">(</span><span class="str">'customScore'</span><span class="punc">,</span> <span class="str">'FFFF00'</span><span class="punc">)</span>
-  <span class="fn">setTextBorder</span><span class="punc">(</span><span class="str">'customScore'</span><span class="punc">,</span> <span class="num">2</span><span class="punc">,</span> <span class="str">'000000'</span><span class="punc">)</span>
-  <span class="fn">setObjectCamera</span><span class="punc">(</span><span class="str">'customScore'</span><span class="punc">,</span> <span class="str">'hud'</span><span class="punc">)</span>
-  <span class="fn">addLuaText</span><span class="punc">(</span><span class="str">'customScore'</span><span class="punc">)</span>
+  <div class="card"><div class="card-title" data-i18n="ex_hud">Score HUD customizado <span class="badge badge-lua">LUA</span></div>
+<pre><span class="kw">function</span> <span class="fn">onCreate</span><span class="punc">()</span>
+  <span class="fn">makeLuaText</span><span class="punc">(</span><span class="str">'hud'</span><span class="punc">,</span><span class="str">''</span><span class="punc">,</span><span class="num">0</span><span class="punc">,</span><span class="num">20</span><span class="punc">,</span><span class="num">20</span><span class="punc">)</span>
+  <span class="fn">setTextSize</span><span class="punc">(</span><span class="str">'hud'</span><span class="punc">,</span><span class="num">28</span><span class="punc">)</span>
+  <span class="fn">setTextColor</span><span class="punc">(</span><span class="str">'hud'</span><span class="punc">,</span><span class="str">'FFFF00'</span><span class="punc">)</span>
+  <span class="fn">setObjectCamera</span><span class="punc">(</span><span class="str">'hud'</span><span class="punc">,</span><span class="str">'hud'</span><span class="punc">)</span>
+  <span class="fn">addLuaText</span><span class="punc">(</span><span class="str">'hud'</span><span class="punc">)</span>
 <span class="kw">end</span>
-
-<span class="kw">function</span> <span class="fn">onUpdate</span><span class="punc">(</span>elapsed<span class="punc">)</span>
-  <span class="fn">setTextString</span><span class="punc">(</span><span class="str">'customScore'</span><span class="punc">,</span>
-    <span class="str">'Score: '</span> <span class="punc">..</span> score <span class="punc">..</span>
-    <span class="str">' | Misses: '</span> <span class="punc">..</span> misses <span class="punc">..</span>
-    <span class="str">' | '</span> <span class="punc">..</span> ratingFC<span class="punc">)</span>
-<span class="kw">end</span>
-<span class="lang-tag">lua</span></pre>
+<span class="kw">function</span> <span class="fn">onUpdate</span><span class="punc">(</span>e<span class="punc">)</span>
+  <span class="fn">setTextString</span><span class="punc">(</span><span class="str">'hud'</span><span class="punc">,</span><span class="str">'Score: '</span><span class="punc">..</span>score<span class="punc">..</span><span class="str">' | '</span><span class="punc">..</span>ratingFC<span class="punc">)</span>
+<span class="kw">end</span><span class="lang-tag">lua</span></pre>
   </div>
-
-  <div class="card">
-    <div class="card-title">Cutscene de intro com vídeo <span class="badge badge-lua">LUA</span></div>
-    <pre><span class="kw">function</span> <span class="fn">onCreatePost</span><span class="punc">()</span>
-  <span class="kw">if</span> <span class="kw">not</span> seenCutscene <span class="kw">then</span>
-    startVideo<span class="punc">(</span><span class="str">'my_intro'</span><span class="punc">)</span>
-    <span class="cmt">-- startCountdown() é chamado automaticamente</span>
-    <span class="cmt">-- quando o vídeo termina</span>
-  <span class="kw">end</span>
-<span class="kw">end</span>
-<span class="lang-tag">lua</span></pre>
-  </div>
-
-  <div class="card">
-    <div class="card-title">Custom event handler <span class="badge badge-lua">LUA</span></div>
-    <pre><span class="kw">function</span> <span class="fn">onEvent</span><span class="punc">(</span>name<span class="punc">,</span> val1<span class="punc">,</span> val2<span class="punc">,</span> strumTime<span class="punc">)</span>
-  <span class="kw">if</span> name <span class="punc">==</span> <span class="str">'Screen Flash'</span> <span class="kw">then</span>
-    <span class="fn">cameraFlash</span><span class="punc">(</span><span class="str">'game'</span><span class="punc">,</span> val1<span class="punc">,</span> <span class="fn">tonumber</span><span class="punc">(</span>val2<span class="punc">),</span> <span class="kw">false</span><span class="punc">)</span>
-  <span class="kw">elseif</span> name <span class="punc">==</span> <span class="str">'Camera Shake'</span> <span class="kw">then</span>
-    <span class="fn">cameraShake</span><span class="punc">(</span><span class="str">'game'</span><span class="punc">,</span> <span class="fn">tonumber</span><span class="punc">(</span>val1<span class="punc">),</span> <span class="fn">tonumber</span><span class="punc">(</span>val2<span class="punc">))</span>
-  <span class="kw">end</span>
-<span class="kw">end</span>
-<span class="lang-tag">lua</span></pre>
-  </div>
-
-  <div class="card">
-    <div class="card-title">Sprite animado no beat — HScript <span class="badge badge-hx">HX</span></div>
-    <pre><span class="kw">import</span> flixel.FlxSprite<span class="punc">;</span>
+  <div class="card"><div class="card-title" data-i18n="ex_beatsprite">Beat sprite — HScript <span class="badge badge-hx">HX</span></div>
+<pre><span class="kw">import</span> flixel.FlxSprite<span class="punc">;</span>
 <span class="kw">import</span> flixel.tweens.FlxTween<span class="punc">;</span>
 <span class="kw">import</span> states.PlayState<span class="punc">;</span>
-
-<span class="kw">var</span> game <span class="punc">=</span> <span class="type">PlayState</span><span class="punc">.</span>instance<span class="punc">;</span>
-<span class="kw">var</span> beatSprite<span class="punc">:</span><span class="type">FlxSprite</span><span class="punc">;</span>
-
+<span class="kw">var</span> spr<span class="punc">:</span><span class="type">FlxSprite</span><span class="punc">;</span>
 <span class="kw">function</span> <span class="fn">onCreate</span><span class="punc">() {</span>
-  beatSprite <span class="punc">=</span> <span class="kw">new</span> <span class="type">FlxSprite</span><span class="punc">(</span><span class="num">100</span><span class="punc">,</span> <span class="num">100</span><span class="punc">);</span>
-  beatSprite<span class="punc">.</span>loadGraphic<span class="punc">(</span><span class="type">Paths</span><span class="punc">.</span>image<span class="punc">(</span><span class="str">'mySprite'</span><span class="punc">));</span>
-  beatSprite<span class="punc">.</span>cameras <span class="punc">= [</span>game<span class="punc">.</span>camHUD<span class="punc">];</span>
-  game<span class="punc">.</span>add<span class="punc">(</span>beatSprite<span class="punc">);</span>
+  spr <span class="punc">=</span> <span class="kw">new</span> <span class="type">FlxSprite</span><span class="punc">(</span><span class="num">100</span><span class="punc">,</span><span class="num">100</span><span class="punc">);</span>
+  spr<span class="punc">.</span>loadGraphic<span class="punc">(</span><span class="type">Paths</span><span class="punc">.</span>image<span class="punc">(</span><span class="str">'mySprite'</span><span class="punc">));</span>
+  <span class="type">PlayState</span><span class="punc">.</span>instance<span class="punc">.</span>add<span class="punc">(</span>spr<span class="punc">);</span>
 <span class="punc">}</span>
-
 <span class="kw">function</span> <span class="fn">onBeatHit</span><span class="punc">() {</span>
-  beatSprite<span class="punc">.</span>scale<span class="punc">.</span>set<span class="punc">(</span><span class="num">1.2</span><span class="punc">,</span> <span class="num">1.2</span><span class="punc">);</span>
-  <span class="type">FlxTween</span><span class="punc">.</span>tween<span class="punc">(</span>beatSprite<span class="punc">.</span>scale<span class="punc">,</span>
-    <span class="punc">{</span>x<span class="punc">:</span> <span class="num">1</span><span class="punc">,</span> y<span class="punc">:</span> <span class="num">1</span><span class="punc">},</span>
-    <span class="num">0.2</span><span class="punc">,</span>
-    <span class="punc">{</span>ease<span class="punc">:</span> flixel<span class="punc">.</span>tweens<span class="punc">.</span>FlxEase<span class="punc">.</span>sineOut<span class="punc">});</span>
-<span class="punc">}</span>
-<span class="lang-tag">hscript</span></pre>
+  spr<span class="punc">.</span>scale<span class="punc">.</span>set<span class="punc">(</span><span class="num">1.2</span><span class="punc">,</span><span class="num">1.2</span><span class="punc">);</span>
+  <span class="type">FlxTween</span><span class="punc">.</span>tween<span class="punc">(</span>spr<span class="punc">.</span>scale<span class="punc">,{</span>x<span class="punc">:</span><span class="num">1</span><span class="punc">,</span>y<span class="punc">:</span><span class="num">1</span><span class="punc">},</span><span class="num">0.2</span><span class="punc">);</span>
+<span class="punc">}</span><span class="lang-tag">hscript</span></pre>
   </div>
+</div>
 
-  <div class="card">
-    <div class="card-title">Note type customizado <span class="badge badge-lua">LUA</span></div>
-    <pre><span class="cmt">-- Arquivo: custom_notetypes/Invisible Note.lua</span>
-<span class="kw">function</span> <span class="fn">onSpawnNote</span><span class="punc">(</span>id<span class="punc">,</span> direction<span class="punc">,</span> noteType<span class="punc">,</span> isSustain<span class="punc">)</span>
-  <span class="kw">if</span> noteType <span class="punc">==</span> <span class="str">'Invisible Note'</span> <span class="kw">then</span>
-    <span class="fn">setPropertyFromGroup</span><span class="punc">(</span><span class="str">'notes'</span><span class="punc">,</span> id<span class="punc">,</span> <span class="str">'visible'</span><span class="punc">,</span> <span class="kw">false</span><span class="punc">)</span>
-    <span class="fn">setPropertyFromGroup</span><span class="punc">(</span><span class="str">'notes'</span><span class="punc">,</span> id<span class="punc">,</span> <span class="str">'ignoreNote'</span><span class="punc">,</span> <span class="kw">false</span><span class="punc">)</span>
-  <span class="kw">end</span>
-<span class="kw">end</span>
+<!-- ===== GENERATOR ===== -->
+<div class="section" id="generator">
+  <div class="section-header">
+    <h2 data-i18n="gen_title">⚡ Gerador de Scripts</h2>
+    <p data-i18n="gen_sub">Configure as opções e gere um template pronto para usar</p>
+  </div>
+  <div class="gen-grid">
+    <div class="gen-panel">
+      <h3 data-i18n="gen_config">Configuração</h3>
 
-<span class="kw">function</span> <span class="fn">goodNoteHit</span><span class="punc">(</span>id<span class="punc">,</span> direction<span class="punc">,</span> noteType<span class="punc">,</span> isSustain<span class="punc">)</span>
-  <span class="kw">if</span> noteType <span class="punc">==</span> <span class="str">'Invisible Note'</span> <span class="kw">then</span>
-    <span class="cmt">-- pontos normais, sem feedback visual</span>
-  <span class="kw">end</span>
-<span class="kw">end</span>
-<span class="lang-tag">lua</span></pre>
+      <div class="form-row">
+        <label data-i18n="gen_lang_label">Linguagem</label>
+        <select id="genLang">
+          <option value="lua">Lua (.lua)</option>
+          <option value="hx">HScript (.hx)</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <label data-i18n="gen_type_label">Tipo de Script</label>
+        <select id="genType">
+          <option value="song" data-i18n-opt="gen_type_song">Song Script</option>
+          <option value="stage" data-i18n-opt="gen_type_stage">Stage Script</option>
+          <option value="character" data-i18n-opt="gen_type_char">Character Script</option>
+          <option value="notetype" data-i18n-opt="gen_type_note">Note Type</option>
+          <option value="event" data-i18n-opt="gen_type_event">Custom Event</option>
+          <option value="global" data-i18n-opt="gen_type_global">Global Script</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <label data-i18n="gen_name_label">Nome do Script</label>
+        <input type="text" id="genName" placeholder="meu_script" value="meu_script"/>
+      </div>
+
+      <div class="form-row" id="genHxImportsRow">
+        <label data-i18n="gen_imports_label">Imports HScript</label>
+        <div class="cb-checklist">
+          <label class="cb-check"><input type="checkbox" name="imp" value="flixel.FlxSprite" checked><span>FlxSprite</span></label>
+          <label class="cb-check"><input type="checkbox" name="imp" value="flixel.FlxG"><span>FlxG</span></label>
+          <label class="cb-check"><input type="checkbox" name="imp" value="flixel.tweens.FlxTween"><span>FlxTween</span></label>
+          <label class="cb-check"><input type="checkbox" name="imp" value="flixel.util.FlxTimer"><span>FlxTimer</span></label>
+          <label class="cb-check"><input type="checkbox" name="imp" value="flixel.text.FlxText"><span>FlxText</span></label>
+          <label class="cb-check"><input type="checkbox" name="imp" value="states.PlayState" checked><span>PlayState</span></label>
+          <label class="cb-check"><input type="checkbox" name="imp" value="backend.ClientPrefs"><span>ClientPrefs</span></label>
+          <label class="cb-check"><input type="checkbox" name="imp" value="backend.Paths"><span>Paths</span></label>
+          <label class="cb-check"><input type="checkbox" name="imp" value="objects.Character"><span>Character</span></label>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label data-i18n="gen_callbacks_label">Callbacks</label>
+        <div class="cb-checklist">
+          <label class="cb-check"><input type="checkbox" name="cb" value="onCreate" checked><span>onCreate</span></label>
+          <label class="cb-check"><input type="checkbox" name="cb" value="onCreatePost"><span>onCreatePost</span></label>
+          <label class="cb-check"><input type="checkbox" name="cb" value="onUpdate" checked><span>onUpdate(elapsed)</span></label>
+          <label class="cb-check"><input type="checkbox" name="cb" value="onUpdatePost"><span>onUpdatePost(elapsed)</span></label>
+          <label class="cb-check"><input type="checkbox" name="cb" value="onBeatHit" checked><span>onBeatHit</span></label>
+          <label class="cb-check"><input type="checkbox" name="cb" value="onStepHit"><span>onStepHit</span></label>
+          <label class="cb-check"><input type="checkbox" name="cb" value="onSectionHit"><span>onSectionHit</span></label>
+          <label class="cb-check"><input type="checkbox" name="cb" value="onSongStart"><span>onSongStart</span></label>
+          <label class="cb-check"><input type="checkbox" name="cb" value="onEndSong"><span>onEndSong</span></label>
+          <label class="cb-check"><input type="checkbox" name="cb" value="onCountdownStarted"><span>onCountdownStarted</span></label>
+          <label class="cb-check"><input type="checkbox" name="cb" value="onCountdownTick"><span>onCountdownTick(counter)</span></label>
+          <label class="cb-check"><input type="checkbox" name="cb" value="goodNoteHit"><span>goodNoteHit(id,dir,type,sustain)</span></label>
+          <label class="cb-check"><input type="checkbox" name="cb" value="opponentNoteHit"><span>opponentNoteHit(id,dir,type,sustain)</span></label>
+          <label class="cb-check"><input type="checkbox" name="cb" value="noteMiss"><span>noteMiss(id,dir,type,sustain)</span></label>
+          <label class="cb-check"><input type="checkbox" name="cb" value="noteMissPress"><span>noteMissPress(direction)</span></label>
+          <label class="cb-check"><input type="checkbox" name="cb" value="onSpawnNote"><span>onSpawnNote(id,dir,type,sustain)</span></label>
+          <label class="cb-check"><input type="checkbox" name="cb" value="onKeyPress"><span>onKeyPress(key)</span></label>
+          <label class="cb-check"><input type="checkbox" name="cb" value="onKeyRelease"><span>onKeyRelease(key)</span></label>
+          <label class="cb-check"><input type="checkbox" name="cb" value="onEvent"><span>onEvent(name,v1,v2,strumTime)</span></label>
+          <label class="cb-check"><input type="checkbox" name="cb" value="onPause"><span>onPause</span></label>
+          <label class="cb-check"><input type="checkbox" name="cb" value="onResume"><span>onResume</span></label>
+          <label class="cb-check"><input type="checkbox" name="cb" value="onGameOver"><span>onGameOver</span></label>
+          <label class="cb-check"><input type="checkbox" name="cb" value="onTweenCompleted"><span>onTweenCompleted(tag)</span></label>
+          <label class="cb-check"><input type="checkbox" name="cb" value="onTimerCompleted"><span>onTimerCompleted(tag,loops,left)</span></label>
+          <label class="cb-check"><input type="checkbox" name="cb" value="onDestroy"><span>onDestroy</span></label>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label data-i18n="gen_extras_label">Extras</label>
+        <div class="cb-checklist">
+          <label class="cb-check"><input type="checkbox" id="genComments" checked><span data-i18n="gen_extra_comments">Comentários explicativos</span></label>
+          <label class="cb-check"><input type="checkbox" id="genHeader" checked><span data-i18n="gen_extra_header">Cabeçalho com info do script</span></label>
+          <label class="cb-check"><input type="checkbox" id="genDebug"><span data-i18n="gen_extra_debug">debugPrint nos callbacks</span></label>
+          <label class="cb-check"><input type="checkbox" id="genGame"><span data-i18n="gen_extra_game">var game = PlayState (HX)</span></label>
+        </div>
+      </div>
+
+      <div class="gen-btns">
+        <button class="btn btn-primary" onclick="generateScript()" data-i18n="gen_btn_generate">⚡ Gerar Script</button>
+        <button class="btn btn-secondary" onclick="resetGen()" data-i18n="gen_btn_reset">↺ Reset</button>
+      </div>
+    </div>
+
+    <div class="output-panel">
+      <div class="output-header">
+        <span class="output-lang-tag" id="outputLangTag">—</span>
+        <div class="output-actions">
+          <button class="btn btn-copy" id="copyBtn" onclick="copyOutput()" data-i18n="gen_btn_copy">⎘ Copiar</button>
+          <button class="btn btn-secondary" onclick="downloadOutput()" data-i18n="gen_btn_download">↓ Download</button>
+        </div>
+      </div>
+      <div class="output-code" id="outputCode">
+        <div class="output-placeholder">
+          <div class="icon">⚡</div>
+          <span data-i18n="gen_placeholder">Configure e clique em Gerar Script</span>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
 </main>
 
 <script>
+// ═══════════════════════════════════════════════════════════
+// I18N
+// ═══════════════════════════════════════════════════════════
+const LANGS = {
+  pt: {
+    subtitle: 'Referência completa para scripts em Lua e HScript (PE 1.0) — P-Slice 3.4.x',
+    tab_intro: 'Intro', tab_callbacks: 'Callbacks', tab_vars: 'Variáveis',
+    tab_playstate: 'PlayState', tab_reflection: 'Reflection', tab_sprites: 'Sprites',
+    tab_tweens: 'Tweens', tab_camera: 'Camera', tab_hscript: 'HScript',
+    tab_examples: 'Exemplos', tab_generator: '⚡ Gerador',
+    intro_title: 'Tipos de Script', intro_sub: 'Onde colocar cada script e quando ele roda',
+    intro_locations: 'Locais de Script',
+    th_type: 'Tipo', th_path: 'Caminho', th_when: 'Quando roda',
+    loc_song: 'Só nessa música específica', loc_stage: 'Só quando o stage é carregado',
+    loc_char: 'Só quando o personagem está na música', loc_notetype: 'Só se esse tipo de nota está no chart',
+    loc_event: 'Só se o evento está no chart', loc_global: 'Sempre, em toda música do mod',
+    tip_pslice_label: 'P-Slice:', tip_pslice: 'Herda toda a API Lua/HScript do PE 1.0. Scripts feitos para PE 1.0 funcionam no P-Slice.',
+    warn_xml_label: 'Project.xml:', warn_xml: 'Certifique que LUA_ALLOWED e HSCRIPT_ALLOWED estão definidos.',
+    cb_title: 'Callbacks', cb_sub: 'Funções chamadas automaticamente pelo engine',
+    cb_lifecycle: 'Ciclo de Vida', cb_beat: 'Ritmo & Música', cb_notes: 'Notas', cb_returns: 'Function Returns',
+    cb_onCreate: 'Início da criação do estado. Use para criar sprites e variáveis.',
+    cb_onCreatePost: 'Após tudo criado. Personagens e strums já existem aqui.',
+    cb_onUpdate: 'Todo frame. elapsed = segundos desde o último frame.',
+    cb_onUpdatePost: 'Após o update do PlayState.',
+    cb_onDestroy: 'Quando o estado é destruído.',
+    cb_onBeatHit: 'Cada beat (usa curBeat). 4 beats por seção.',
+    cb_onStepHit: 'Cada step (usa curStep). 16 por seção.',
+    cb_onSectionHit: 'Cada seção.',
+    cb_onCountdown: 'Countdown iniciado. Strums têm posição aqui.',
+    cb_onCountdownTick: 'counter: 0=Three, 1=Two, 2=One, 3=Go!, 4=Start.',
+    cb_onSongStart: 'Música começa a tocar.',
+    cb_onEndSong: 'Música terminou. Retorne Function_Stop para cutscene.',
+    cb_goodNoteHit: 'Jogador acertou uma nota.',
+    cb_opponentNoteHit: 'Oponente acertou uma nota.',
+    cb_noteMiss: 'Jogador errou uma nota.',
+    cb_onSpawnNote: 'Uma nota aparece na tela.',
+    th_value: 'Valor', th_effect: 'Efeito',
+    ret_stop: 'Cancela o comportamento padrão', ret_continue: 'Continua normalmente',
+    ret_stopLua: 'Impede chamada nos próximos scripts Lua',
+    ret_stopHScript: 'Impede chamada nos próximos HScripts',
+    ret_stopAll: 'Impede em todos os scripts',
+    vars_title: 'Variáveis Globais', vars_sub: 'Leitura direta — use setProperty para alterar',
+    vars_beat: 'Música & Beat', vars_score: 'Score & Gameplay', vars_chars: 'Personagens & Stage',
+    th_var: 'Variável', th_type: 'Tipo', th_desc: 'Descrição',
+    var_songName: 'Nome da música', var_bpm: 'BPM inicial', var_curBpm: 'BPM na seção atual',
+    var_curBeat: 'Beat atual', var_curStep: 'Step atual', var_curSection: 'Seção atual',
+    var_songLength: 'Duração em ms', var_crochet: 'Duração de 1 beat em ms',
+    var_score: 'Pontuação atual', var_misses: 'Notas erradas', var_hits: 'Notas acertadas',
+    var_combo: 'Combo atual', var_rating: '0.0 a 1.0', var_ratingName: '"Sick!", "Good", "Bad", "Shit"',
+    var_ratingFC: '"FC", "GFC", "SFC", "SDBC", "Clear"', var_botPlay: 'true se bot ativo',
+    var_bfName: 'JSON name do player', var_dadName: 'JSON name do oponente',
+    var_gfName: 'JSON name da GF', var_curStage: 'Stage da música',
+    var_mustHit: 'Seção do player?', var_scrollSpeed: 'Velocidade das notas',
+    ps_sub: 'Funções de controle do estado do jogo', ps_flow: 'Fluxo da Música',
+    ps_cutscenes: 'Cutscenes', ps_events: 'Eventos & UI',
+    ref_sub: 'Leitura e escrita de propriedades de qualquer objeto',
+    spr_title: 'Sprites & Texto', spr_sub: 'Criar e manipular objetos visuais em runtime',
+    tw_sub: 'Animações de propriedades e delays', tw_ease_label: 'Easings:',
+    cam_sub: 'Zoom, flash, shake, fade',
+    hx_sub: 'Scripting em Haxe puro — acesso direto às classes',
+    hx_diff: 'Diferenças vs Lua', hx_access: 'Acesso direto ao PlayState',
+    ex_title: 'Exemplos Completos', ex_sub: 'Scripts prontos para usar',
+    ex_bfscale: 'BF fica maior na vez dele', ex_hud: 'Score HUD customizado', ex_beatsprite: 'Beat sprite — HScript',
+    gen_title: '⚡ Gerador de Scripts', gen_sub: 'Configure as opções e gere um template pronto para usar',
+    gen_config: 'Configuração', gen_lang_label: 'Linguagem', gen_type_label: 'Tipo de Script',
+    gen_name_label: 'Nome do Script', gen_imports_label: 'Imports HScript',
+    gen_callbacks_label: 'Callbacks', gen_extras_label: 'Extras',
+    gen_extra_comments: 'Comentários explicativos', gen_extra_header: 'Cabeçalho com info do script',
+    gen_extra_debug: 'debugPrint nos callbacks', gen_extra_game: 'var game = PlayState (HX)',
+    gen_btn_generate: '⚡ Gerar Script', gen_btn_reset: '↺ Reset',
+    gen_btn_copy: '⎘ Copiar', gen_btn_download: '↓ Download',
+    gen_placeholder: 'Configure e clique em Gerar Script',
+    gen_type_song: 'Song Script', gen_type_stage: 'Stage Script', gen_type_char: 'Character Script',
+    gen_type_note: 'Note Type', gen_type_event: 'Custom Event', gen_type_global: 'Global Script',
+  },
+  en: {
+    subtitle: 'Complete reference for Lua and HScript scripts (PE 1.0) — P-Slice 3.4.x',
+    tab_intro: 'Intro', tab_callbacks: 'Callbacks', tab_vars: 'Variables',
+    tab_playstate: 'PlayState', tab_reflection: 'Reflection', tab_sprites: 'Sprites',
+    tab_tweens: 'Tweens', tab_camera: 'Camera', tab_hscript: 'HScript',
+    tab_examples: 'Examples', tab_generator: '⚡ Generator',
+    intro_title: 'Script Types', intro_sub: 'Where to place each script and when it runs',
+    intro_locations: 'Script Locations',
+    th_type: 'Type', th_path: 'Path', th_when: 'When it runs',
+    loc_song: 'Only for this specific song', loc_stage: 'Only when the stage is loaded',
+    loc_char: 'Only when the character is in the song', loc_notetype: 'Only if this note type is in the chart',
+    loc_event: 'Only if the event is in the chart', loc_global: 'Always, in every song of the mod',
+    tip_pslice_label: 'P-Slice:', tip_pslice: 'Inherits all Lua/HScript API from PE 1.0. Scripts made for PE 1.0 work in P-Slice.',
+    warn_xml_label: 'Project.xml:', warn_xml: 'Make sure LUA_ALLOWED and HSCRIPT_ALLOWED are defined.',
+    cb_title: 'Callbacks', cb_sub: 'Functions automatically called by the engine',
+    cb_lifecycle: 'Lifecycle', cb_beat: 'Rhythm & Music', cb_notes: 'Notes', cb_returns: 'Function Returns',
+    cb_onCreate: 'State creation start. Use to create sprites and variables.',
+    cb_onCreatePost: 'After everything is created. Characters and strums exist here.',
+    cb_onUpdate: 'Every frame. elapsed = seconds since last frame.',
+    cb_onUpdatePost: 'After PlayState update.',
+    cb_onDestroy: 'When the state is destroyed.',
+    cb_onBeatHit: 'Every beat (uses curBeat). 4 beats per section.',
+    cb_onStepHit: 'Every step (uses curStep). 16 per section.',
+    cb_onSectionHit: 'Every section.',
+    cb_onCountdown: 'Countdown started. Strums have position here.',
+    cb_onCountdownTick: 'counter: 0=Three, 1=Two, 2=One, 3=Go!, 4=Start.',
+    cb_onSongStart: 'Music starts playing.',
+    cb_onEndSong: 'Song ended. Return Function_Stop to make a cutscene.',
+    cb_goodNoteHit: 'Player hit a note.',
+    cb_opponentNoteHit: 'Opponent hit a note.',
+    cb_noteMiss: 'Player missed a note.',
+    cb_onSpawnNote: 'A note appears on screen.',
+    th_value: 'Value', th_effect: 'Effect',
+    ret_stop: 'Cancels the default behavior', ret_continue: 'Continues normally',
+    ret_stopLua: 'Prevents call in next Lua scripts',
+    ret_stopHScript: 'Prevents call in next HScripts',
+    ret_stopAll: 'Prevents in all scripts',
+    vars_title: 'Global Variables', vars_sub: 'Direct read — use setProperty to change',
+    vars_beat: 'Music & Beat', vars_score: 'Score & Gameplay', vars_chars: 'Characters & Stage',
+    th_var: 'Variable', th_type: 'Type', th_desc: 'Description',
+    var_songName: 'Song name', var_bpm: 'Starting BPM', var_curBpm: 'BPM at current section',
+    var_curBeat: 'Current beat', var_curStep: 'Current step', var_curSection: 'Current section',
+    var_songLength: 'Duration in ms', var_crochet: 'Duration of 1 beat in ms',
+    var_score: 'Current score', var_misses: 'Missed notes', var_hits: 'Hit notes',
+    var_combo: 'Current combo', var_rating: '0.0 to 1.0', var_ratingName: '"Sick!", "Good", "Bad", "Shit"',
+    var_ratingFC: '"FC", "GFC", "SFC", "SDBC", "Clear"', var_botPlay: 'true if bot is active',
+    var_bfName: 'Player JSON name', var_dadName: 'Opponent JSON name',
+    var_gfName: 'GF JSON name', var_curStage: 'Song stage',
+    var_mustHit: "Player's section?", var_scrollSpeed: 'Note scroll speed',
+    ps_sub: 'Game state control functions', ps_flow: 'Song Flow',
+    ps_cutscenes: 'Cutscenes', ps_events: 'Events & UI',
+    ref_sub: 'Read and write properties of any object',
+    spr_title: 'Sprites & Text', spr_sub: 'Create and manipulate visual objects at runtime',
+    tw_sub: 'Property animations and delays', tw_ease_label: 'Easings:',
+    cam_sub: 'Zoom, flash, shake, fade',
+    hx_sub: 'Pure Haxe scripting — direct class access',
+    hx_diff: 'Differences vs Lua', hx_access: 'Direct PlayState access',
+    ex_title: 'Full Examples', ex_sub: 'Ready-to-use scripts',
+    ex_bfscale: 'BF gets bigger on his turn', ex_hud: 'Custom Score HUD', ex_beatsprite: 'Beat sprite — HScript',
+    gen_title: '⚡ Script Generator', gen_sub: 'Configure options and generate a ready-to-use template',
+    gen_config: 'Configuration', gen_lang_label: 'Language', gen_type_label: 'Script Type',
+    gen_name_label: 'Script Name', gen_imports_label: 'HScript Imports',
+    gen_callbacks_label: 'Callbacks', gen_extras_label: 'Extras',
+    gen_extra_comments: 'Explanatory comments', gen_extra_header: 'Header with script info',
+    gen_extra_debug: 'debugPrint in callbacks', gen_extra_game: 'var game = PlayState (HX)',
+    gen_btn_generate: '⚡ Generate Script', gen_btn_reset: '↺ Reset',
+    gen_btn_copy: '⎘ Copy', gen_btn_download: '↓ Download',
+    gen_placeholder: 'Configure and click Generate Script',
+    gen_type_song: 'Song Script', gen_type_stage: 'Stage Script', gen_type_char: 'Character Script',
+    gen_type_note: 'Note Type', gen_type_event: 'Custom Event', gen_type_global: 'Global Script',
+  },
+  es: {
+    subtitle: 'Referencia completa para scripts en Lua y HScript (PE 1.0) — P-Slice 3.4.x',
+    tab_intro: 'Intro', tab_callbacks: 'Callbacks', tab_vars: 'Variables',
+    tab_playstate: 'PlayState', tab_reflection: 'Reflection', tab_sprites: 'Sprites',
+    tab_tweens: 'Tweens', tab_camera: 'Cámara', tab_hscript: 'HScript',
+    tab_examples: 'Ejemplos', tab_generator: '⚡ Generador',
+    intro_title: 'Tipos de Script', intro_sub: 'Dónde colocar cada script y cuándo se ejecuta',
+    intro_locations: 'Ubicaciones de Script',
+    th_type: 'Tipo', th_path: 'Ruta', th_when: 'Cuándo se ejecuta',
+    loc_song: 'Solo para esta canción específica', loc_stage: 'Solo cuando el escenario se carga',
+    loc_char: 'Solo cuando el personaje está en la canción', loc_notetype: 'Solo si este tipo de nota está en el chart',
+    loc_event: 'Solo si el evento está en el chart', loc_global: 'Siempre, en cada canción del mod',
+    tip_pslice_label: 'P-Slice:', tip_pslice: 'Hereda toda la API Lua/HScript del PE 1.0. Los scripts para PE 1.0 funcionan en P-Slice.',
+    warn_xml_label: 'Project.xml:', warn_xml: 'Asegúrate de que LUA_ALLOWED y HSCRIPT_ALLOWED estén definidos.',
+    cb_title: 'Callbacks', cb_sub: 'Funciones llamadas automáticamente por el engine',
+    cb_lifecycle: 'Ciclo de Vida', cb_beat: 'Ritmo & Música', cb_notes: 'Notas', cb_returns: 'Function Returns',
+    cb_onCreate: 'Inicio de la creación del estado. Úsalo para crear sprites y variables.',
+    cb_onCreatePost: 'Después de crear todo. Los personajes y strums ya existen aquí.',
+    cb_onUpdate: 'Cada frame. elapsed = segundos desde el último frame.',
+    cb_onUpdatePost: 'Después del update del PlayState.',
+    cb_onDestroy: 'Cuando el estado es destruido.',
+    cb_onBeatHit: 'Cada beat (usa curBeat). 4 beats por sección.',
+    cb_onStepHit: 'Cada step (usa curStep). 16 por sección.',
+    cb_onSectionHit: 'Cada sección.',
+    cb_onCountdown: 'Countdown iniciado. Los strums ya tienen posición aquí.',
+    cb_onCountdownTick: 'counter: 0=Three, 1=Two, 2=One, 3=Go!, 4=Start.',
+    cb_onSongStart: 'La música comienza a sonar.',
+    cb_onEndSong: 'La canción terminó. Retorna Function_Stop para cutscene.',
+    cb_goodNoteHit: 'El jugador acertó una nota.',
+    cb_opponentNoteHit: 'El oponente acertó una nota.',
+    cb_noteMiss: 'El jugador falló una nota.',
+    cb_onSpawnNote: 'Una nota aparece en pantalla.',
+    th_value: 'Valor', th_effect: 'Efecto',
+    ret_stop: 'Cancela el comportamiento predeterminado', ret_continue: 'Continúa normalmente',
+    ret_stopLua: 'Impide la llamada en los próximos scripts Lua',
+    ret_stopHScript: 'Impide la llamada en los próximos HScripts',
+    ret_stopAll: 'Impide en todos los scripts',
+    vars_title: 'Variables Globales', vars_sub: 'Lectura directa — usa setProperty para cambiar',
+    vars_beat: 'Música & Beat', vars_score: 'Score & Gameplay', vars_chars: 'Personajes & Escenario',
+    th_var: 'Variable', th_type: 'Tipo', th_desc: 'Descripción',
+    var_songName: 'Nombre de la canción', var_bpm: 'BPM inicial', var_curBpm: 'BPM en la sección actual',
+    var_curBeat: 'Beat actual', var_curStep: 'Step actual', var_curSection: 'Sección actual',
+    var_songLength: 'Duración en ms', var_crochet: 'Duración de 1 beat en ms',
+    var_score: 'Puntuación actual', var_misses: 'Notas falladas', var_hits: 'Notas acertadas',
+    var_combo: 'Combo actual', var_rating: '0.0 a 1.0', var_ratingName: '"Sick!", "Good", "Bad", "Shit"',
+    var_ratingFC: '"FC", "GFC", "SFC", "SDBC", "Clear"', var_botPlay: 'true si el bot está activo',
+    var_bfName: 'Nombre JSON del jugador', var_dadName: 'Nombre JSON del oponente',
+    var_gfName: 'Nombre JSON de la GF', var_curStage: 'Escenario de la canción',
+    var_mustHit: '¿Sección del jugador?', var_scrollSpeed: 'Velocidad de las notas',
+    ps_sub: 'Funciones de control del estado del juego', ps_flow: 'Flujo de la Canción',
+    ps_cutscenes: 'Cinemáticas', ps_events: 'Eventos & UI',
+    ref_sub: 'Leer y escribir propiedades de cualquier objeto',
+    spr_title: 'Sprites & Texto', spr_sub: 'Crear y manipular objetos visuales en runtime',
+    tw_sub: 'Animaciones de propiedades y delays', tw_ease_label: 'Easings:',
+    cam_sub: 'Zoom, flash, shake, fade',
+    hx_sub: 'Scripting en Haxe puro — acceso directo a las clases',
+    hx_diff: 'Diferencias vs Lua', hx_access: 'Acceso directo al PlayState',
+    ex_title: 'Ejemplos Completos', ex_sub: 'Scripts listos para usar',
+    ex_bfscale: 'BF se agranda en su turno', ex_hud: 'HUD de Score personalizado', ex_beatsprite: 'Beat sprite — HScript',
+    gen_title: '⚡ Generador de Scripts', gen_sub: 'Configura las opciones y genera una plantilla lista para usar',
+    gen_config: 'Configuración', gen_lang_label: 'Lenguaje', gen_type_label: 'Tipo de Script',
+    gen_name_label: 'Nombre del Script', gen_imports_label: 'Imports HScript',
+    gen_callbacks_label: 'Callbacks', gen_extras_label: 'Extras',
+    gen_extra_comments: 'Comentarios explicativos', gen_extra_header: 'Encabezado con info del script',
+    gen_extra_debug: 'debugPrint en los callbacks', gen_extra_game: 'var game = PlayState (HX)',
+    gen_btn_generate: '⚡ Generar Script', gen_btn_reset: '↺ Reset',
+    gen_btn_copy: '⎘ Copiar', gen_btn_download: '↓ Descargar',
+    gen_placeholder: 'Configura y haz clic en Generar Script',
+    gen_type_song: 'Song Script', gen_type_stage: 'Stage Script', gen_type_char: 'Character Script',
+    gen_type_note: 'Note Type', gen_type_event: 'Custom Event', gen_type_global: 'Global Script',
+  }
+};
+
+let currentLang = 'pt';
+let lastGenerated = { code: '', lang: 'lua', name: 'script' };
+
+function setLang(lang) {
+  currentLang = lang;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    if (b.textContent.includes(lang === 'pt' ? 'PT' : lang === 'en' ? 'EN' : 'ES'))
+      b.classList.add('active');
+  });
+  const T = LANGS[lang];
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.getAttribute('data-i18n');
+    if (T[k] !== undefined) {
+      if (el.children.length > 0 && el.tagName !== 'P') {
+        const badges = el.querySelectorAll('.badge');
+        el.innerHTML = T[k];
+        badges.forEach(b => el.appendChild(b));
+      } else {
+        el.textContent = T[k];
+      }
+    }
+  });
+  document.querySelectorAll('[data-i18n-tab]').forEach(el => {
+    const k = el.getAttribute('data-i18n-tab');
+    if (T[k]) el.textContent = T[k];
+  });
+  document.querySelectorAll('[data-i18n-opt]').forEach(el => {
+    const k = el.getAttribute('data-i18n-opt');
+    if (T[k]) el.textContent = T[k];
+  });
+  const ph = document.querySelector('#outputCode .output-placeholder span');
+  if (ph) ph.textContent = T['gen_placeholder'];
+}
+
+// ═══════════════════════════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════════════════════════
 function switchTab(id) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  event.target.classList.add('active');
+  document.querySelector(`[data-tab="${id}"]`).classList.add('active');
+
+  const importsRow = document.getElementById('genHxImportsRow');
+  if (importsRow) {
+    importsRow.style.display = document.getElementById('genLang')?.value === 'hx' ? 'block' : 'none';
+  }
+}
+
+document.getElementById('genLang').addEventListener('change', function() {
+  const row = document.getElementById('genHxImportsRow');
+  row.style.display = this.value === 'hx' ? 'block' : 'none';
+});
+document.getElementById('genHxImportsRow').style.display = 'none';
+
+// ═══════════════════════════════════════════════════════════
+// GENERATOR
+// ═══════════════════════════════════════════════════════════
+const CB_SIGNATURES = {
+  onCreate:           { lua: 'onCreate()',                          hx: 'onCreate()' },
+  onCreatePost:       { lua: 'onCreatePost()',                      hx: 'onCreatePost()' },
+  onUpdate:           { lua: 'onUpdate(elapsed)',                   hx: 'onUpdate(elapsed:Float)' },
+  onUpdatePost:       { lua: 'onUpdatePost(elapsed)',               hx: 'onUpdatePost(elapsed:Float)' },
+  onBeatHit:          { lua: 'onBeatHit()',                         hx: 'onBeatHit()' },
+  onStepHit:          { lua: 'onStepHit()',                         hx: 'onStepHit()' },
+  onSectionHit:       { lua: 'onSectionHit()',                      hx: 'onSectionHit()' },
+  onSongStart:        { lua: 'onSongStart()',                       hx: 'onSongStart()' },
+  onEndSong:          { lua: 'onEndSong()',                         hx: 'onEndSong()' },
+  onCountdownStarted: { lua: 'onCountdownStarted()',                hx: 'onCountdownStarted()' },
+  onCountdownTick:    { lua: 'onCountdownTick(counter)',            hx: 'onCountdownTick(counter:Int)' },
+  goodNoteHit:        { lua: 'goodNoteHit(id, direction, noteType, isSustainNote)',  hx: 'goodNoteHit(id:Int, direction:Int, noteType:String, isSustainNote:Bool)' },
+  opponentNoteHit:    { lua: 'opponentNoteHit(id, direction, noteType, isSustainNote)', hx: 'opponentNoteHit(id:Int, direction:Int, noteType:String, isSustainNote:Bool)' },
+  noteMiss:           { lua: 'noteMiss(id, direction, noteType, isSustainNote)', hx: 'noteMiss(id:Int, direction:Int, noteType:String, isSustainNote:Bool)' },
+  noteMissPress:      { lua: 'noteMissPress(direction)',            hx: 'noteMissPress(direction:Int)' },
+  onSpawnNote:        { lua: 'onSpawnNote(id, direction, noteType, isSustainNote)', hx: 'onSpawnNote(id:Int, direction:Int, noteType:String, isSustainNote:Bool)' },
+  onKeyPress:         { lua: 'onKeyPress(key)',                     hx: 'onKeyPress(key:Int)' },
+  onKeyRelease:       { lua: 'onKeyRelease(key)',                   hx: 'onKeyRelease(key:Int)' },
+  onEvent:            { lua: 'onEvent(name, value1, value2, strumTime)', hx: 'onEvent(name:String, value1:String, value2:String, strumTime:Float)' },
+  onPause:            { lua: 'onPause()',                           hx: 'onPause()' },
+  onResume:           { lua: 'onResume()',                          hx: 'onResume()' },
+  onGameOver:         { lua: 'onGameOver()',                        hx: 'onGameOver()' },
+  onTweenCompleted:   { lua: 'onTweenCompleted(tag)',               hx: 'onTweenCompleted(tag:String)' },
+  onTimerCompleted:   { lua: 'onTimerCompleted(tag, loops, loopsLeft)', hx: 'onTimerCompleted(tag:String, loops:Int, loopsLeft:Int)' },
+  onDestroy:          { lua: 'onDestroy()',                         hx: 'onDestroy()' },
+};
+
+const CB_COMMENTS = {
+  pt: {
+    onCreate: 'Chamado quando o estado começa a ser criado',
+    onCreatePost: 'Chamado após tudo ser criado (personagens, strums, etc)',
+    onUpdate: 'Chamado todo frame — elapsed é o delta em segundos',
+    onUpdatePost: 'Chamado após o update do PlayState',
+    onBeatHit: 'Chamado a cada beat — use curBeat para saber qual é',
+    onStepHit: 'Chamado a cada step (4 por beat) — use curStep',
+    onSectionHit: 'Chamado a cada seção — use curSection',
+    onSongStart: 'Chamado quando a música começa a tocar de verdade',
+    onEndSong: 'Chamado ao fim da música — retorne Function_Stop para cutscene',
+    onCountdownStarted: 'Countdown iniciado — strums já têm posição aqui',
+    onCountdownTick: '0=Three 1=Two 2=One 3=Go! 4=Start',
+    goodNoteHit: 'Jogador acertou — direction: 0=esq 1=baixo 2=cima 3=dir',
+    opponentNoteHit: 'Oponente acertou uma nota',
+    noteMiss: 'Jogador errou — retorne Function_Stop para cancelar penalidade',
+    noteMissPress: 'Tecla pressionada sem nota (ghost tap desligado)',
+    onSpawnNote: 'Nota apareceu na tela',
+    onKeyPress: '0=esq 1=baixo 2=cima 3=dir',
+    onKeyRelease: '0=esq 1=baixo 2=cima 3=dir',
+    onEvent: 'Evento do chart disparado',
+    onPause: 'Jogo pausado',
+    onResume: 'Jogo resumido',
+    onGameOver: 'Jogador morreu — retorne Function_Stop para cancelar',
+    onTweenCompleted: 'Um doTween terminou',
+    onTimerCompleted: 'Um runTimer terminou — loops=total, loopsLeft=restantes',
+    onDestroy: 'Estado sendo destruído — limpe recursos aqui',
+  },
+  en: {
+    onCreate: 'Called when the state starts being created',
+    onCreatePost: 'Called after everything is created (characters, strums, etc)',
+    onUpdate: 'Called every frame — elapsed is the delta in seconds',
+    onUpdatePost: 'Called after PlayState update',
+    onBeatHit: 'Called every beat — use curBeat to know which one',
+    onStepHit: 'Called every step (4 per beat) — use curStep',
+    onSectionHit: 'Called every section — use curSection',
+    onSongStart: 'Called when music actually starts playing',
+    onEndSong: 'Called at song end — return Function_Stop for cutscene',
+    onCountdownStarted: 'Countdown started — strums have position here',
+    onCountdownTick: '0=Three 1=Two 2=One 3=Go! 4=Start',
+    goodNoteHit: 'Player hit — direction: 0=left 1=down 2=up 3=right',
+    opponentNoteHit: 'Opponent hit a note',
+    noteMiss: 'Player missed — return Function_Stop to cancel penalty',
+    noteMissPress: 'Key pressed without a note (ghost tap off)',
+    onSpawnNote: 'Note appeared on screen',
+    onKeyPress: '0=left 1=down 2=up 3=right',
+    onKeyRelease: '0=left 1=down 2=up 3=right',
+    onEvent: 'Chart event triggered',
+    onPause: 'Game paused',
+    onResume: 'Game resumed',
+    onGameOver: 'Player died — return Function_Stop to cancel',
+    onTweenCompleted: 'A doTween finished',
+    onTimerCompleted: 'A runTimer finished — loops=total, loopsLeft=remaining',
+    onDestroy: 'State being destroyed — clean up resources here',
+  },
+  es: {
+    onCreate: 'Llamado cuando el estado empieza a crearse',
+    onCreatePost: 'Llamado después de crear todo (personajes, strums, etc)',
+    onUpdate: 'Llamado cada frame — elapsed es el delta en segundos',
+    onUpdatePost: 'Llamado después del update del PlayState',
+    onBeatHit: 'Llamado cada beat — usa curBeat para saber cuál es',
+    onStepHit: 'Llamado cada step (4 por beat) — usa curStep',
+    onSectionHit: 'Llamado cada sección — usa curSection',
+    onSongStart: 'Llamado cuando la música empieza a sonar de verdad',
+    onEndSong: 'Llamado al fin de la canción — retorna Function_Stop para cinemática',
+    onCountdownStarted: 'Countdown iniciado — los strums ya tienen posición aquí',
+    onCountdownTick: '0=Three 1=Two 2=One 3=Go! 4=Start',
+    goodNoteHit: 'Jugador acertó — direction: 0=izq 1=abajo 2=arriba 3=der',
+    opponentNoteHit: 'El oponente acertó una nota',
+    noteMiss: 'Jugador falló — retorna Function_Stop para cancelar penalidad',
+    noteMissPress: 'Tecla presionada sin nota (ghost tap desactivado)',
+    onSpawnNote: 'Una nota apareció en pantalla',
+    onKeyPress: '0=izq 1=abajo 2=arriba 3=der',
+    onKeyRelease: '0=izq 1=abajo 2=arriba 3=der',
+    onEvent: 'Evento del chart disparado',
+    onPause: 'Juego pausado',
+    onResume: 'Juego resumido',
+    onGameOver: 'El jugador murió — retorna Function_Stop para cancelar',
+    onTweenCompleted: 'Un doTween terminó',
+    onTimerCompleted: 'Un runTimer terminó — loops=total, loopsLeft=restantes',
+    onDestroy: 'Estado siendo destruido — limpia recursos aquí',
+  }
+};
+
+const TYPE_PATHS = {
+  pt: {
+    song: 'mods/SeuMod/songs/nome-da-musica/',
+    stage: 'mods/SeuMod/stages/',
+    character: 'mods/SeuMod/characters/',
+    notetype: 'mods/SeuMod/custom_notetypes/',
+    event: 'mods/SeuMod/custom_events/',
+    global: 'mods/SeuMod/scripts/',
+  },
+  en: {
+    song: 'mods/YourMod/songs/song-name/',
+    stage: 'mods/YourMod/stages/',
+    character: 'mods/YourMod/characters/',
+    notetype: 'mods/YourMod/custom_notetypes/',
+    event: 'mods/YourMod/custom_events/',
+    global: 'mods/YourMod/scripts/',
+  },
+  es: {
+    song: 'mods/TuMod/songs/nombre-cancion/',
+    stage: 'mods/TuMod/stages/',
+    character: 'mods/TuMod/characters/',
+    notetype: 'mods/TuMod/custom_notetypes/',
+    event: 'mods/TuMod/custom_events/',
+    global: 'mods/TuMod/scripts/',
+  }
+};
+
+function generateScript() {
+  const lang = document.getElementById('genLang').value;
+  const type = document.getElementById('genType').value;
+  const name = document.getElementById('genName').value.trim() || 'my_script';
+  const doComments = document.getElementById('genComments').checked;
+  const doHeader = document.getElementById('genHeader').checked;
+  const doDebug = document.getElementById('genDebug').checked;
+  const doGame = document.getElementById('genGame').checked;
+
+  const selectedCbs = [...document.querySelectorAll('input[name="cb"]:checked')].map(i => i.value);
+  const selectedImps = [...document.querySelectorAll('input[name="imp"]:checked')].map(i => i.value);
+
+  const T = LANGS[currentLang];
+  const cbComments = CB_COMMENTS[currentLang];
+  const isHx = lang === 'hx';
+  const ext = isHx ? '.hx' : '.lua';
+  const path = TYPE_PATHS[currentLang][type];
+
+  const cm = isHx ? '//' : '--';
+  const blockOpen = isHx ? '{' : '';
+  const blockClose = isHx ? '}' : 'end';
+  const fnKw = isHx ? 'function' : 'function';
+  const semi = isHx ? ';' : '';
+
+  let lines = [];
+
+  if (doHeader) {
+    lines.push(`${cm} ═══════════════════════════════════════════`);
+    lines.push(`${cm}  ${name}${ext}`);
+    lines.push(`${cm}  P-Slice Script — ${T[`gen_type_${type === 'notetype' ? 'note' : type === 'character' ? 'char' : type}`]}`);
+    lines.push(`${cm}  ${currentLang === 'pt' ? 'Caminho' : currentLang === 'en' ? 'Path' : 'Ruta'}: ${path}${name}${ext}`);
+    lines.push(`${cm} ═══════════════════════════════════════════`);
+    lines.push('');
+  }
+
+  if (isHx) {
+    if (selectedImps.length > 0) {
+      selectedImps.forEach(imp => lines.push(`import ${imp};`));
+      lines.push('');
+    }
+    if (doGame && selectedImps.includes('states.PlayState')) {
+      lines.push('var game = PlayState.instance;');
+      lines.push('');
+    }
+  }
+
+  if (selectedCbs.length === 0) {
+    lines.push(isHx
+      ? `${cm} ${currentLang === 'pt' ? 'Nenhum callback selecionado' : currentLang === 'en' ? 'No callback selected' : 'Ningún callback seleccionado'}`
+      : `${cm} ${currentLang === 'pt' ? 'Nenhum callback selecionado' : currentLang === 'en' ? 'No callback selected' : 'Ningún callback seleccionado'}`
+    );
+  } else {
+    selectedCbs.forEach((cb, idx) => {
+      const sig = CB_SIGNATURES[cb];
+      if (!sig) return;
+      if (doComments && cbComments[cb]) {
+        lines.push(`${cm} ${cbComments[cb]}`);
+      }
+      if (isHx) {
+        lines.push(`function ${sig.hx} {`);
+        if (doDebug) lines.push(`    debugPrint("[${name}] ${cb}");`);
+        lines.push('}');
+      } else {
+        lines.push(`function ${sig.lua}`);
+        if (doDebug) lines.push(`    debugPrint("[${name}] ${cb}")`);
+        lines.push('end');
+      }
+      if (idx < selectedCbs.length - 1) lines.push('');
+    });
+  }
+
+  const code = lines.join('\n');
+  lastGenerated = { code, lang, name, ext };
+
+  document.getElementById('outputLangTag').textContent = isHx ? 'hscript / .hx' : 'lua / .lua';
+  document.getElementById('outputCode').innerHTML =
+    `<pre>${escapeHtml(code)}</pre>`;
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function copyOutput() {
+  if (!lastGenerated.code) return;
+  navigator.clipboard.writeText(lastGenerated.code).then(() => {
+    const btn = document.getElementById('copyBtn');
+    const T = LANGS[currentLang];
+    const orig = T['gen_btn_copy'];
+    btn.textContent = '✓ OK';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 1500);
+  });
+}
+
+function downloadOutput() {
+  if (!lastGenerated.code) return;
+  const blob = new Blob([lastGenerated.code], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = lastGenerated.name + lastGenerated.ext;
+  a.click();
+}
+
+function resetGen() {
+  document.getElementById('genName').value = 'meu_script';
+  document.getElementById('genLang').value = 'lua';
+  document.getElementById('genType').value = 'song';
+  document.getElementById('genHxImportsRow').style.display = 'none';
+  document.querySelectorAll('input[name="cb"]').forEach(i => {
+    i.checked = ['onCreate','onUpdate','onBeatHit'].includes(i.value);
+  });
+  document.querySelectorAll('input[name="imp"]').forEach(i => {
+    i.checked = ['flixel.FlxSprite','states.PlayState'].includes(i.value);
+  });
+  document.getElementById('genComments').checked = true;
+  document.getElementById('genHeader').checked = true;
+  document.getElementById('genDebug').checked = false;
+  document.getElementById('genGame').checked = false;
+  const T = LANGS[currentLang];
+  document.getElementById('outputCode').innerHTML =
+    `<div class="output-placeholder"><div class="icon">⚡</div><span>${T['gen_placeholder']}</span></div>`;
+  document.getElementById('outputLangTag').textContent = '—';
+  lastGenerated = { code: '', lang: 'lua', name: 'script', ext: '.lua' };
 }
 </script>
 </body>
